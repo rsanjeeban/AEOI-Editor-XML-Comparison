@@ -14,7 +14,7 @@ namespace AEOI.Editor.Web.Server.Controllers
     [Route("api/[controller]/[action]")]
     public class ComparisonController : ControllerBase
     {
-        public string fileName = "AEOI_ v2.0_Example_New_Submission 1.xml";
+        public string fileName = "AEOI CDF1.xml";
         public bool IsLarge = false;
         private readonly ILogger<UploadController> logger;
         private FileHandlerService fileHandlerService = new FileHandlerService();
@@ -30,25 +30,27 @@ namespace AEOI.Editor.Web.Server.Controllers
             try
             {
                 var path = Path.Combine("/tmp", "Uploads", fileName);
-
+                string fullpath = Path.GetFullPath(path);
+                
                 //logger.LogInformation("upload file path @{path}", path);
 
-                XmlSerializer serializer = new XmlSerializer(typeof(AEOIUKSubmissionFIReport));
+                XmlSerializer serializer = new XmlSerializer(typeof(Report));
 
-                //StreamReader reader = new StreamReader(path);
-                //var previousFile = (AEOIUKSubmissionFIReport)serializer.Deserialize(reader);
-                //reader.Close();
+                StreamReader reader = new StreamReader(path);
+                var previousFile = (Report)serializer.Deserialize(reader);
+                reader.Close();
 
                 //Convert the CurrentFile to Object
-                AEOIUKSubmissionFIReport currentFile = (AEOIUKSubmissionFIReport)serializer.Deserialize(file.OpenReadStream());
-                //string response = comparisonService.CompareObjects(previousFile, currentFile);
+                Report currentFile = (Report)serializer.Deserialize(file.OpenReadStream());
+                string response = comparisonService.CompareObjects(previousFile, currentFile);
                 XmlDocument currentXml = SerializeToXmlDocument(currentFile);
                 XmlDocument previousXml = new XmlDocument();
                 previousXml.Load(path);
 
-                string response = comparisonService.CompareXml(currentXml, previousXml);
 
-
+                //string response = comparisonService.CompareXml(currentXml, previousXml);
+                //string response = comparisonService.CompareXmls(currentXml, previousXml);
+                //string response = comparisonService.XmlConvertToJsonAndCompare(currentXml, previousXml);
 
                 return Ok(response);
             }

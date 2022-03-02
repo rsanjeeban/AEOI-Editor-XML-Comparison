@@ -1,573 +1,151 @@
-﻿using System.Xml.Serialization;
-
+﻿using System;
+using System.ComponentModel;
+using System.Xml.Serialization;
 namespace AEOI.Editor.Web.Shared
 {
 
-    // NOTE: Generated code may require at least .NET Framework 4.5 or .NET Core/Standard 2.0.
+        // NOTE: Generated code may require at least .NET Framework 4.5 or .NET Core/Standard 2.0.
     /// <remarks/>
     [System.SerializableAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://hmrc.gov.uk/AEOIUKSubmissionFIReport")]
-    [System.Xml.Serialization.XmlRootAttribute(Namespace = "http://hmrc.gov.uk/AEOIUKSubmissionFIReport", IsNullable = false)]
-    public partial class AEOIUKSubmissionFIReport
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
+    public partial class Report
     {
 
-        private AEOIUKSubmissionFIReportMessageData messageDataField;
+        private ushort customerIdField;
 
-        private AEOIUKSubmissionFIReportSubmission submissionField;
+        private string nameField;
 
-        private decimal schemaVersionField;
+        private string agreementField;
+
+        private string modeField;
+
+        private System.DateTime requestedOnField;
+
+        private ReportPeriod periodField;
+
+        private ReportExtensions extensionsField;
+
+        private ReportReportData reportDataField;
+
+        private string ruleField;
 
         /// <remarks/>
-        [XmlElementAttribute("MessageData")]
-        public AEOIUKSubmissionFIReportMessageData MessageData
+        public ushort CustomerId
         {
             get
             {
-                return this.messageDataField;
+                return this.customerIdField;
             }
             set
             {
-                this.messageDataField = value;
+                this.customerIdField = value;
             }
         }
 
         /// <remarks/>
-        [XmlElementAttribute("Submission")]
-        public AEOIUKSubmissionFIReportSubmission Submission
+        public string Name
         {
             get
             {
-                return this.submissionField;
+                return this.nameField;
             }
             set
             {
-                this.submissionField = value;
+                this.nameField = value;
             }
         }
 
         /// <remarks/>
-        //[XmlAttribute("SchemaVersion")]
-        public decimal SchemaVersion
+        public string Agreement
         {
             get
             {
-                return this.schemaVersionField;
+                return this.agreementField;
             }
             set
             {
-                this.schemaVersionField = value;
-            }
-        }
-    }
-
-    /// <remarks/>
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://hmrc.gov.uk/AEOIUKSubmissionFIReport")]
-    public partial class AEOIUKSubmissionFIReportMessageData
-    {
-
-        private string messageCategoryField;
-
-        private System.DateTime xMLTimeStampField;
-
-        private uint aEOIUserIdField;
-
-        /// <remarks/>
-        public string MessageCategory
-        {
-            get
-            {
-                return this.messageCategoryField;
-            }
-            set
-            {
-                this.messageCategoryField = value;
+                this.agreementField = value;
             }
         }
 
         /// <remarks/>
-        public System.DateTime XMLTimeStamp
+        public string Mode
         {
             get
             {
-                return this.xMLTimeStampField;
+                return this.modeField;
             }
             set
             {
-                this.xMLTimeStampField = value;
+                this.modeField = value;
             }
         }
 
         /// <remarks/>
-        public uint AEOIUserId
+        public System.DateTime RequestedOn
         {
             get
             {
-                return this.aEOIUserIdField;
+                return this.requestedOnField;
             }
             set
             {
-                this.aEOIUserIdField = value;
-            }
-        }
-    }
-
-    /// <remarks/>
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://hmrc.gov.uk/AEOIUKSubmissionFIReport")]
-    public partial class AEOIUKSubmissionFIReportSubmission
-    {
-
-        private System.DateTime reportingPeriodField;
-
-        private string messageRefField;
-
-        private AEOIUKSubmissionFIReportSubmissionFIReturn fIReturnField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType = "date")]
-        public System.DateTime ReportingPeriod
-        {
-            get
-            {
-                return this.reportingPeriodField;
-            }
-            set
-            {
-                this.reportingPeriodField = value;
+                this.requestedOnField = value;
             }
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType = "integer")]
-        public string MessageRef
+        public ReportPeriod Period
         {
             get
             {
-                return this.messageRefField;
+                return this.periodField;
             }
             set
             {
-                this.messageRefField = value;
+                this.periodField = value;
             }
         }
 
         /// <remarks/>
-        public AEOIUKSubmissionFIReportSubmissionFIReturn FIReturn
+        public ReportExtensions Extensions
         {
             get
             {
-                return this.fIReturnField;
+                return this.extensionsField;
             }
             set
             {
-                this.fIReturnField = value;
-            }
-        }
-    }
-
-    /// <remarks/>
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://hmrc.gov.uk/AEOIUKSubmissionFIReport")]
-    public partial class AEOIUKSubmissionFIReportSubmissionFIReturn
-    {
-
-        private AEOIUKSubmissionFIReportSubmissionFIReturnFIReturnAction fIReturnActionField;
-
-        private string fIRegisterIdField;
-
-        private string dueDiligenceIndField;
-
-        private string thresholdIndField;
-
-        private string insuranceElectionField;
-
-        private string dormantAccElectionField;
-
-        private AEOIUKSubmissionFIReportSubmissionFIReturnAccountData[] accountDataField;
-
-        /// <remarks/>
-        public AEOIUKSubmissionFIReportSubmissionFIReturnFIReturnAction FIReturnAction
-        {
-            get
-            {
-                return this.fIReturnActionField;
-            }
-            set
-            {
-                this.fIReturnActionField = value;
+                this.extensionsField = value;
             }
         }
 
         /// <remarks/>
-        public string FIRegisterId
+        public ReportReportData ReportData
         {
             get
             {
-                return this.fIRegisterIdField;
+                return this.reportDataField;
             }
             set
             {
-                this.fIRegisterIdField = value;
+                this.reportDataField = value;
             }
         }
-
-        /// <remarks/>
-        public string DueDiligenceInd
-        {
-            get
-            {
-                return this.dueDiligenceIndField;
-            }
-            set
-            {
-                this.dueDiligenceIndField = value;
-            }
-        }
-
-        /// <remarks/>
-        public string ThresholdInd
-        {
-            get
-            {
-                return this.thresholdIndField;
-            }
-            set
-            {
-                this.thresholdIndField = value;
-            }
-        }
-
-        /// <remarks/>
-        public string InsuranceElection
-        {
-            get
-            {
-                return this.insuranceElectionField;
-            }
-            set
-            {
-                this.insuranceElectionField = value;
-            }
-        }
-
-        /// <remarks/>
-        public string DormantAccElection
-        {
-            get
-            {
-                return this.dormantAccElectionField;
-            }
-            set
-            {
-                this.dormantAccElectionField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("AccountData")]
-        public AEOIUKSubmissionFIReportSubmissionFIReturnAccountData[] AccountData
-        {
-            get
-            {
-                return this.accountDataField;
-            }
-            set
-            {
-                this.accountDataField = value;
-            }
-        }
-    }
-
-    /// <remarks/>
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://hmrc.gov.uk/AEOIUKSubmissionFIReport")]
-    public partial class AEOIUKSubmissionFIReportSubmissionFIReturnFIReturnAction
-    {
-
-        private string fIReturnRefField;
-
-        private string actionField;
-
-        /// <remarks/>
-        public string FIReturnRef
-        {
-            get
-            {
-                return this.fIReturnRefField;
-            }
-            set
-            {
-                this.fIReturnRefField = value;
-            }
-        }
-
-        /// <remarks/>
-        public string Action
-        {
-            get
-            {
-                return this.actionField;
-            }
-            set
-            {
-                this.actionField = value;
-            }
-        }
-    }
-
-    /// <remarks/>
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://hmrc.gov.uk/AEOIUKSubmissionFIReport")]
-    public partial class AEOIUKSubmissionFIReportSubmissionFIReturnAccountData
-    {
-
-        private AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataAccountAction accountActionField;
-
-        private string accountIdentifierField;
-
-        private AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataAccountNumber accountNumberField;
-
-        private AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataAccountBalance accountBalanceField;
-
-        private byte accountClosedIndField;
-
-        private byte undocumentedAccountIndField;
-
-        private byte dormantAccountIndField;
-
-        private AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataPaymentData paymentDataField;
-
-        private string accountHolderTypeField;
-
-        private AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataOrganisation organisationField;
-
-        private AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataPerson personField;
-
-        /// <remarks/>
-        public AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataAccountAction AccountAction
-        {
-            get
-            {
-                return this.accountActionField;
-            }
-            set
-            {
-                this.accountActionField = value;
-            }
-        }
-
-        /// <remarks/>
-        public string AccountIdentifier
-        {
-            get
-            {
-                return this.accountIdentifierField;
-            }
-            set
-            {
-                this.accountIdentifierField = value;
-            }
-        }
-
-        /// <remarks/>
-        public AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataAccountNumber AccountNumber
-        {
-            get
-            {
-                return this.accountNumberField;
-            }
-            set
-            {
-                this.accountNumberField = value;
-            }
-        }
-
-        /// <remarks/>
-        public AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataAccountBalance AccountBalance
-        {
-            get
-            {
-                return this.accountBalanceField;
-            }
-            set
-            {
-                this.accountBalanceField = value;
-            }
-        }
-
-        /// <remarks/>
-        public byte AccountClosedInd
-        {
-            get
-            {
-                return this.accountClosedIndField;
-            }
-            set
-            {
-                this.accountClosedIndField = value;
-            }
-        }
-
-        /// <remarks/>
-        public byte UndocumentedAccountInd
-        {
-            get
-            {
-                return this.undocumentedAccountIndField;
-            }
-            set
-            {
-                this.undocumentedAccountIndField = value;
-            }
-        }
-
-        /// <remarks/>
-        public byte DormantAccountInd
-        {
-            get
-            {
-                return this.dormantAccountIndField;
-            }
-            set
-            {
-                this.dormantAccountIndField = value;
-            }
-        }
-
-        /// <remarks/>
-        public AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataPaymentData PaymentData
-        {
-            get
-            {
-                return this.paymentDataField;
-            }
-            set
-            {
-                this.paymentDataField = value;
-            }
-        }
-
-        /// <remarks/>
-        public string AccountHolderType
-        {
-            get
-            {
-                return this.accountHolderTypeField;
-            }
-            set
-            {
-                this.accountHolderTypeField = value;
-            }
-        }
-
-        /// <remarks/>
-        public AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataOrganisation Organisation
-        {
-            get
-            {
-                return this.organisationField;
-            }
-            set
-            {
-                this.organisationField = value;
-            }
-        }
-
-        /// <remarks/>
-        public AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataPerson Person
-        {
-            get
-            {
-                return this.personField;
-            }
-            set
-            {
-                this.personField = value;
-            }
-        }
-    }
-
-    /// <remarks/>
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://hmrc.gov.uk/AEOIUKSubmissionFIReport")]
-    public partial class AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataAccountAction
-    {
-
-        private string accountRefField;
-
-        private string actionField;
-
-        /// <remarks/>
-        public string AccountRef
-        {
-            get
-            {
-                return this.accountRefField;
-            }
-            set
-            {
-                this.accountRefField = value;
-            }
-        }
-
-        /// <remarks/>
-        public string Action
-        {
-            get
-            {
-                return this.actionField;
-            }
-            set
-            {
-                this.actionField = value;
-            }
-        }
-    }
-
-    /// <remarks/>
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://hmrc.gov.uk/AEOIUKSubmissionFIReport")]
-    public partial class AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataAccountNumber
-    {
-
-        private string accountNumberTypeField;
-
-        private string valueField;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string AccountNumberType
+        public string rule
         {
             get
             {
-                return this.accountNumberTypeField;
+                return this.ruleField;
             }
             set
             {
-                this.accountNumberTypeField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlTextAttribute()]
-        public string Value
-        {
-            get
-            {
-                return this.valueField;
-            }
-            set
-            {
-                this.valueField = value;
+                this.ruleField = value;
             }
         }
     }
@@ -575,39 +153,275 @@ namespace AEOI.Editor.Web.Shared
     /// <remarks/>
     [System.SerializableAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://hmrc.gov.uk/AEOIUKSubmissionFIReport")]
-    public partial class AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataAccountBalance
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    public partial class ReportPeriod
     {
 
-        private string currCodeField;
+        private System.DateTime startField;
 
-        private decimal valueField;
+        private System.DateTime endField;
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute(DataType = "date")]
+        public System.DateTime start
+        {
+            get
+            {
+                return this.startField;
+            }
+            set
+            {
+                this.startField = value;
+            }
+        }
+
+        /// <remarks/>
+        [System.Xml.Serialization.XmlAttributeAttribute(DataType = "date")]
+        public System.DateTime end
+        {
+            get
+            {
+                return this.endField;
+            }
+            set
+            {
+                this.endField = value;
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.SerializableAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    public partial class ReportExtensions
+    {
+
+        private ReportExtensionsReportExtension reportExtensionField;
+
+        /// <remarks/>
+        public ReportExtensionsReportExtension ReportExtension
+        {
+            get
+            {
+                return this.reportExtensionField;
+            }
+            set
+            {
+                this.reportExtensionField = value;
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.SerializableAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    public partial class ReportExtensionsReportExtension
+    {
+
+        private byte canSubmitNilReturnField;
+
+        /// <remarks/>
+        public byte CanSubmitNilReturn
+        {
+            get
+            {
+                return this.canSubmitNilReturnField;
+            }
+            set
+            {
+                this.canSubmitNilReturnField = value;
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.SerializableAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    public partial class ReportReportData
+    {
+
+        private ReportReportDataFinancialInstitutions financialInstitutionsField;
+
+        /// <remarks/>
+        public ReportReportDataFinancialInstitutions FinancialInstitutions
+        {
+            get
+            {
+                return this.financialInstitutionsField;
+            }
+            set
+            {
+                this.financialInstitutionsField = value;
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.SerializableAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    public partial class ReportReportDataFinancialInstitutions
+    {
+
+        private ReportReportDataFinancialInstitutionsFinancialInstitution financialInstitutionField;
+
+        /// <remarks/>
+        public ReportReportDataFinancialInstitutionsFinancialInstitution FinancialInstitution
+        {
+            get
+            {
+                return this.financialInstitutionField;
+            }
+            set
+            {
+                this.financialInstitutionField = value;
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.SerializableAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    public partial class ReportReportDataFinancialInstitutionsFinancialInstitution
+    {
+
+        private string idField;
+
+        private string referenceField;
+
+        private string nameField;
+
+        private string classificationField;
+
+        private ReportReportDataFinancialInstitutionsFinancialInstitutionAdresses adressesField;
+
+        private ReportReportDataFinancialInstitutionsFinancialInstitutionIdentificationNumbers identificationNumbersField;
+
+        private string taxResidencyField;
+
+        private ReportReportDataFinancialInstitutionsFinancialInstitutionAccounts accountsField;
+
+        private byte rowField;
+
+        /// <remarks/>
+        public string Id
+        {
+            get
+            {
+                return this.idField;
+            }
+            set
+            {
+                this.idField = value;
+            }
+        }
+
+        /// <remarks/>
+        public string Reference
+        {
+            get
+            {
+                return this.referenceField;
+            }
+            set
+            {
+                this.referenceField = value;
+            }
+        }
+
+        /// <remarks/>
+        public string Name
+        {
+            get
+            {
+                return this.nameField;
+            }
+            set
+            {
+                this.nameField = value;
+            }
+        }
+
+        /// <remarks/>
+        public string Classification
+        {
+            get
+            {
+                return this.classificationField;
+            }
+            set
+            {
+                this.classificationField = value;
+            }
+        }
+
+        /// <remarks/>
+        public ReportReportDataFinancialInstitutionsFinancialInstitutionAdresses Adresses
+        {
+            get
+            {
+                return this.adressesField;
+            }
+            set
+            {
+                this.adressesField = value;
+            }
+        }
+
+        /// <remarks/>
+        public ReportReportDataFinancialInstitutionsFinancialInstitutionIdentificationNumbers IdentificationNumbers
+        {
+            get
+            {
+                return this.identificationNumbersField;
+            }
+            set
+            {
+                this.identificationNumbersField = value;
+            }
+        }
+
+        /// <remarks/>
+        public string TaxResidency
+        {
+            get
+            {
+                return this.taxResidencyField;
+            }
+            set
+            {
+                this.taxResidencyField = value;
+            }
+        }
+
+        /// <remarks/>
+        public ReportReportDataFinancialInstitutionsFinancialInstitutionAccounts Accounts
+        {
+            get
+            {
+                return this.accountsField;
+            }
+            set
+            {
+                this.accountsField = value;
+            }
+        }
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string currCode
+        public byte row
         {
             get
             {
-                return this.currCodeField;
+                return this.rowField;
             }
             set
             {
-                this.currCodeField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlTextAttribute()]
-        public decimal Value
-        {
-            get
-            {
-                return this.valueField;
-            }
-            set
-            {
-                this.valueField = value;
+                this.rowField = value;
             }
         }
     }
@@ -615,52 +429,22 @@ namespace AEOI.Editor.Web.Shared
     /// <remarks/>
     [System.SerializableAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://hmrc.gov.uk/AEOIUKSubmissionFIReport")]
-    public partial class AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataPaymentData
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    public partial class ReportReportDataFinancialInstitutionsFinancialInstitutionAdresses
     {
 
-        private string paymentCodeField;
-
-        private string paymentTypeDescField;
-
-        private AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataPaymentDataPaymentAmount paymentAmountField;
+        private ReportReportDataFinancialInstitutionsFinancialInstitutionAdressesAdress adressField;
 
         /// <remarks/>
-        public string PaymentCode
+        public ReportReportDataFinancialInstitutionsFinancialInstitutionAdressesAdress Adress
         {
             get
             {
-                return this.paymentCodeField;
+                return this.adressField;
             }
             set
             {
-                this.paymentCodeField = value;
-            }
-        }
-
-        /// <remarks/>
-        public string PaymentTypeDesc
-        {
-            get
-            {
-                return this.paymentTypeDescField;
-            }
-            set
-            {
-                this.paymentTypeDescField = value;
-            }
-        }
-
-        /// <remarks/>
-        public AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataPaymentDataPaymentAmount PaymentAmount
-        {
-            get
-            {
-                return this.paymentAmountField;
-            }
-            set
-            {
-                this.paymentAmountField = value;
+                this.adressField = value;
             }
         }
     }
@@ -668,132 +452,18 @@ namespace AEOI.Editor.Web.Shared
     /// <remarks/>
     [System.SerializableAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://hmrc.gov.uk/AEOIUKSubmissionFIReport")]
-    public partial class AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataPaymentDataPaymentAmount
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    public partial class ReportReportDataFinancialInstitutionsFinancialInstitutionAdressesAdress
     {
 
-        private string currCodeField;
-
-        private decimal valueField;
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string currCode
-        {
-            get
-            {
-                return this.currCodeField;
-            }
-            set
-            {
-                this.currCodeField = value;
-            }
-        }
-
-        /// <remarks/>
-        [System.Xml.Serialization.XmlTextAttribute()]
-        public decimal Value
-        {
-            get
-            {
-                return this.valueField;
-            }
-            set
-            {
-                this.valueField = value;
-            }
-        }
-    }
-
-    /// <remarks/>
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://hmrc.gov.uk/AEOIUKSubmissionFIReport")]
-    public partial class AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataOrganisation
-    {
-
-        private string organisationNameField;
-
-        private AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataOrganisationAddress addressField;
-
-        private AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataOrganisationHolderInfo holderInfoField;
-
-        private AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataOrganisationControllingPerson controllingPersonField;
-
-        /// <remarks/>
-        public string OrganisationName
-        {
-            get
-            {
-                return this.organisationNameField;
-            }
-            set
-            {
-                this.organisationNameField = value;
-            }
-        }
-
-        /// <remarks/>
-        public AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataOrganisationAddress Address
-        {
-            get
-            {
-                return this.addressField;
-            }
-            set
-            {
-                this.addressField = value;
-            }
-        }
-
-        /// <remarks/>
-        public AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataOrganisationHolderInfo HolderInfo
-        {
-            get
-            {
-                return this.holderInfoField;
-            }
-            set
-            {
-                this.holderInfoField = value;
-            }
-        }
-
-        /// <remarks/>
-        public AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataOrganisationControllingPerson ControllingPerson
-        {
-            get
-            {
-                return this.controllingPersonField;
-            }
-            set
-            {
-                this.controllingPersonField = value;
-            }
-        }
-    }
-
-    /// <remarks/>
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://hmrc.gov.uk/AEOIUKSubmissionFIReport")]
-    public partial class AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataOrganisationAddress
-    {
-
-        private byte buildingIdentifierField;
+        private int buildingIdentifierField;
 
         private string streetNameField;
 
-        private string districtNameField;
-
         private string cityField;
 
-        private string postCodeField;
-
-        private string countryCodeField;
-
         /// <remarks/>
-        public byte BuildingIdentifier
+        public int BuildingIdentifier
         {
             get
             {
@@ -819,19 +489,6 @@ namespace AEOI.Editor.Web.Shared
         }
 
         /// <remarks/>
-        public string DistrictName
-        {
-            get
-            {
-                return this.districtNameField;
-            }
-            set
-            {
-                this.districtNameField = value;
-            }
-        }
-
-        /// <remarks/>
         public string City
         {
             get
@@ -843,68 +500,27 @@ namespace AEOI.Editor.Web.Shared
                 this.cityField = value;
             }
         }
-
-        /// <remarks/>
-        public string PostCode
-        {
-            get
-            {
-                return this.postCodeField;
-            }
-            set
-            {
-                this.postCodeField = value;
-            }
-        }
-
-        /// <remarks/>
-        public string CountryCode
-        {
-            get
-            {
-                return this.countryCodeField;
-            }
-            set
-            {
-                this.countryCodeField = value;
-            }
-        }
     }
 
     /// <remarks/>
     [System.SerializableAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://hmrc.gov.uk/AEOIUKSubmissionFIReport")]
-    public partial class AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataOrganisationHolderInfo
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    public partial class ReportReportDataFinancialInstitutionsFinancialInstitutionIdentificationNumbers
     {
 
-        private AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataOrganisationHolderInfoIN inField;
-
-        private string resCountryCodeField;
+        private ReportReportDataFinancialInstitutionsFinancialInstitutionIdentificationNumbersIdentificationNumber identificationNumberField;
 
         /// <remarks/>
-        public AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataOrganisationHolderInfoIN IN
+        public ReportReportDataFinancialInstitutionsFinancialInstitutionIdentificationNumbersIdentificationNumber IdentificationNumber
         {
             get
             {
-                return this.inField;
+                return this.identificationNumberField;
             }
             set
             {
-                this.inField = value;
-            }
-        }
-
-        /// <remarks/>
-        public string ResCountryCode
-        {
-            get
-            {
-                return this.resCountryCodeField;
-            }
-            set
-            {
-                this.resCountryCodeField = value;
+                this.identificationNumberField = value;
             }
         }
     }
@@ -912,55 +528,52 @@ namespace AEOI.Editor.Web.Shared
     /// <remarks/>
     [System.SerializableAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://hmrc.gov.uk/AEOIUKSubmissionFIReport")]
-    public partial class AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataOrganisationHolderInfoIN
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    public partial class ReportReportDataFinancialInstitutionsFinancialInstitutionIdentificationNumbersIdentificationNumber
     {
 
-        private string issuedByField;
+        private string classificationField;
 
-        private string iNTypeField;
+        private string countryField;
 
-        private ulong valueField;
+        private string numberField;
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string issuedBy
+        public string Classification
         {
             get
             {
-                return this.issuedByField;
+                return this.classificationField;
             }
             set
             {
-                this.issuedByField = value;
+                this.classificationField = value;
             }
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlAttributeAttribute()]
-        public string INType
+        public string Country
         {
             get
             {
-                return this.iNTypeField;
+                return this.countryField;
             }
             set
             {
-                this.iNTypeField = value;
+                this.countryField = value;
             }
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlTextAttribute()]
-        public ulong Value
+        public string Number
         {
             get
             {
-                return this.valueField;
+                return this.numberField;
             }
             set
             {
-                this.valueField = value;
+                this.numberField = value;
             }
         }
     }
@@ -968,37 +581,22 @@ namespace AEOI.Editor.Web.Shared
     /// <remarks/>
     [System.SerializableAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://hmrc.gov.uk/AEOIUKSubmissionFIReport")]
-    public partial class AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataOrganisationControllingPerson
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    public partial class ReportReportDataFinancialInstitutionsFinancialInstitutionAccounts
     {
 
-        private AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataOrganisationControllingPersonPerson personField;
-
-        private string ctrlgPersonTypeField;
+        private ReportReportDataFinancialInstitutionsFinancialInstitutionAccountsAccount accountField;
 
         /// <remarks/>
-        public AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataOrganisationControllingPersonPerson Person
+        public ReportReportDataFinancialInstitutionsFinancialInstitutionAccountsAccount Account
         {
             get
             {
-                return this.personField;
+                return this.accountField;
             }
             set
             {
-                this.personField = value;
-            }
-        }
-
-        /// <remarks/>
-        public string CtrlgPersonType
-        {
-            get
-            {
-                return this.ctrlgPersonTypeField;
-            }
-            set
-            {
-                this.ctrlgPersonTypeField = value;
+                this.accountField = value;
             }
         }
     }
@@ -1006,67 +604,97 @@ namespace AEOI.Editor.Web.Shared
     /// <remarks/>
     [System.SerializableAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://hmrc.gov.uk/AEOIUKSubmissionFIReport")]
-    public partial class AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataOrganisationControllingPersonPerson
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    public partial class ReportReportDataFinancialInstitutionsFinancialInstitutionAccountsAccount
     {
 
-        private string firstNameField;
+        private string idField;
 
-        private string lastNameField;
+        private uint numberField;
 
-        private AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataOrganisationControllingPersonPersonAddress addressField;
+        private string numberTypeField;
 
-        private AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataOrganisationControllingPersonPersonHolderTaxInfo holderTaxInfoField;
+        private string typeField;
+
+        private string statusField;
+
+        private ReportReportDataFinancialInstitutionsFinancialInstitutionAccountsAccountAccountHolders accountHoldersField;
 
         /// <remarks/>
-        public string FirstName
+        public string Id
         {
             get
             {
-                return this.firstNameField;
+                return this.idField;
             }
             set
             {
-                this.firstNameField = value;
+                this.idField = value;
             }
         }
 
         /// <remarks/>
-        public string LastName
+        public uint Number
         {
             get
             {
-                return this.lastNameField;
+                return this.numberField;
             }
             set
             {
-                this.lastNameField = value;
+                this.numberField = value;
             }
         }
 
         /// <remarks/>
-        public AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataOrganisationControllingPersonPersonAddress Address
+        public string NumberType
         {
             get
             {
-                return this.addressField;
+                return this.numberTypeField;
             }
             set
             {
-                this.addressField = value;
+                this.numberTypeField = value;
             }
         }
 
         /// <remarks/>
-        public AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataOrganisationControllingPersonPersonHolderTaxInfo HolderTaxInfo
+        public string Type
         {
             get
             {
-                return this.holderTaxInfoField;
+                return this.typeField;
             }
             set
             {
-                this.holderTaxInfoField = value;
+                this.typeField = value;
+            }
+        }
+
+        /// <remarks/>
+        public string Status
+        {
+            get
+            {
+                return this.statusField;
+            }
+            set
+            {
+                this.statusField = value;
+            }
+        }
+
+        /// <remarks/>
+        public ReportReportDataFinancialInstitutionsFinancialInstitutionAccountsAccountAccountHolders AccountHolders
+        {
+            get
+            {
+                return this.accountHoldersField;
+            }
+            set
+            {
+                this.accountHoldersField = value;
             }
         }
     }
@@ -1074,14 +702,73 @@ namespace AEOI.Editor.Web.Shared
     /// <remarks/>
     [System.SerializableAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://hmrc.gov.uk/AEOIUKSubmissionFIReport")]
-    public partial class AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataOrganisationControllingPersonPersonAddress
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    public partial class ReportReportDataFinancialInstitutionsFinancialInstitutionAccountsAccountAccountHolders
+    {
+
+        private ReportReportDataFinancialInstitutionsFinancialInstitutionAccountsAccountAccountHoldersIndividual individualField;
+
+        /// <remarks/>
+        public ReportReportDataFinancialInstitutionsFinancialInstitutionAccountsAccountAccountHoldersIndividual Individual
+        {
+            get
+            {
+                return this.individualField;
+            }
+            set
+            {
+                this.individualField = value;
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.SerializableAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    public partial class ReportReportDataFinancialInstitutionsFinancialInstitutionAccountsAccountAccountHoldersIndividual
+    {
+
+        private string idField;
+
+        private ReportReportDataFinancialInstitutionsFinancialInstitutionAccountsAccountAccountHoldersIndividualBirdthInfo birdthInfoField;
+
+        /// <remarks/>
+        public string Id
+        {
+            get
+            {
+                return this.idField;
+            }
+            set
+            {
+                this.idField = value;
+            }
+        }
+
+        /// <remarks/>
+        public ReportReportDataFinancialInstitutionsFinancialInstitutionAccountsAccountAccountHoldersIndividualBirdthInfo BirdthInfo
+        {
+            get
+            {
+                return this.birdthInfoField;
+            }
+            set
+            {
+                this.birdthInfoField = value;
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.SerializableAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
+    public partial class ReportReportDataFinancialInstitutionsFinancialInstitutionAccountsAccountAccountHoldersIndividualBirdthInfo
     {
 
         private string cityField;
 
-        private string countryCodeField;
-
         /// <remarks/>
         public string City
         {
@@ -1092,171 +779,6 @@ namespace AEOI.Editor.Web.Shared
             set
             {
                 this.cityField = value;
-            }
-        }
-
-        /// <remarks/>
-        public string CountryCode
-        {
-            get
-            {
-                return this.countryCodeField;
-            }
-            set
-            {
-                this.countryCodeField = value;
-            }
-        }
-    }
-
-    /// <remarks/>
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://hmrc.gov.uk/AEOIUKSubmissionFIReport")]
-    public partial class AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataOrganisationControllingPersonPersonHolderTaxInfo
-    {
-
-        private string resCountryCodeField;
-
-        /// <remarks/>
-        public string ResCountryCode
-        {
-            get
-            {
-                return this.resCountryCodeField;
-            }
-            set
-            {
-                this.resCountryCodeField = value;
-            }
-        }
-    }
-
-    /// <remarks/>
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://hmrc.gov.uk/AEOIUKSubmissionFIReport")]
-    public partial class AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataPerson
-    {
-
-        private string firstNameField;
-
-        private string lastNameField;
-
-        private AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataPersonAddress addressField;
-
-        private AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataPersonHolderTaxInfo holderTaxInfoField;
-
-        /// <remarks/>
-        public string FirstName
-        {
-            get
-            {
-                return this.firstNameField;
-            }
-            set
-            {
-                this.firstNameField = value;
-            }
-        }
-
-        /// <remarks/>
-        public string LastName
-        {
-            get
-            {
-                return this.lastNameField;
-            }
-            set
-            {
-                this.lastNameField = value;
-            }
-        }
-
-        /// <remarks/>
-        public AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataPersonAddress Address
-        {
-            get
-            {
-                return this.addressField;
-            }
-            set
-            {
-                this.addressField = value;
-            }
-        }
-
-        /// <remarks/>
-        public AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataPersonHolderTaxInfo HolderTaxInfo
-        {
-            get
-            {
-                return this.holderTaxInfoField;
-            }
-            set
-            {
-                this.holderTaxInfoField = value;
-            }
-        }
-    }
-
-    /// <remarks/>
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://hmrc.gov.uk/AEOIUKSubmissionFIReport")]
-    public partial class AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataPersonAddress
-    {
-
-        private string cityField;
-
-        private string countryCodeField;
-
-        /// <remarks/>
-        public string City
-        {
-            get
-            {
-                return this.cityField;
-            }
-            set
-            {
-                this.cityField = value;
-            }
-        }
-
-        /// <remarks/>
-        public string CountryCode
-        {
-            get
-            {
-                return this.countryCodeField;
-            }
-            set
-            {
-                this.countryCodeField = value;
-            }
-        }
-    }
-
-    /// <remarks/>
-    [System.SerializableAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://hmrc.gov.uk/AEOIUKSubmissionFIReport")]
-    public partial class AEOIUKSubmissionFIReportSubmissionFIReturnAccountDataPersonHolderTaxInfo
-    {
-
-        private string resCountryCodeField;
-
-        /// <remarks/>
-        public string ResCountryCode
-        {
-            get
-            {
-                return this.resCountryCodeField;
-            }
-            set
-            {
-                this.resCountryCodeField = value;
             }
         }
     }
