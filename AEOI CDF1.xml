@@ -1,0 +1,55 @@
+<Report rule="AEOI-v1.3.rule">
+  <CustomerId>3003</CustomerId>
+  <Name>Standard.xlsx</Name>
+  <Agreement>CRS</Agreement>
+  <Mode>Actual></Mode>
+  <RequestedOn>2022-02-10T16:43:08</RequestedOn>
+  <Period start="2021-01-01" end="2021-12-31" />
+  <Extensions>
+    <ReportExtension>
+      <CanSubmitNilReturn>0</CanSubmitNilReturn>
+    </ReportExtension>
+  </Extensions>
+  <ReportData>
+    <FinancialInstitutions>
+      <FinancialInstitution row="11">
+        <Id>FI.11</Id>
+        <Reference>A</Reference>
+        <Name>Various 1</Name>
+        <Classification>Reporting FI</Classification>
+        <Adresses>
+          <Adress>
+            <BuildingIdentifier>123</BuildingIdentifier>
+            <StreetName>Any Street</StreetName>
+            <City>George Town</City>
+          </Adress>
+        </Adresses>
+        <IdentificationNumbers>
+            <IdentificationNumber>
+                <Classification>TIN</Classification>
+                <Country>IMN</Country>
+                <Number>FT123445</Number>
+            </IdentificationNumber>
+        </IdentificationNumbers>
+        <TaxResidency>IMN</TaxResidency>
+        <Accounts>
+            <Account>
+                <Id>AC.11</Id>
+                <Number>1000000</Number>
+                <NumberType>IBAN</NumberType>
+                <Type>Custodial</Type>
+                <Status>Active</Status>
+                <AccountHolders>
+                    <Individual>
+                        <Id>IN.11</Id>
+                        <BirdthInfo>
+                            <City>London</City>
+                        </BirdthInfo>
+                    </Individual>
+                </AccountHolders>
+            </Account>
+        </Accounts>
+      </FinancialInstitution>
+    </FinancialInstitutions>
+  </ReportData>
+</Report>
