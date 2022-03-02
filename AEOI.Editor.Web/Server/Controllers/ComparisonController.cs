@@ -17,7 +17,6 @@ namespace AEOI.Editor.Web.Server.Controllers
         public string fileName = "AEOI CDF1.xml";
         public bool IsLarge = false;
         private readonly ILogger<UploadController> logger;
-        private FileHandlerService fileHandlerService = new FileHandlerService();
         private ComparisonService comparisonService = new ComparisonService();
         public ComparisonController(ILogger<UploadController> logger)
         {
@@ -25,14 +24,13 @@ namespace AEOI.Editor.Web.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Compare(IFormFile file)
+        public IActionResult Compare(IFormFile file)
         {
             try
             {
+                // Read The existing file
                 var path = Path.Combine("/tmp", "Uploads", fileName);
                 string fullpath = Path.GetFullPath(path);
-                
-                //logger.LogInformation("upload file path @{path}", path);
 
                 XmlSerializer serializer = new XmlSerializer(typeof(Report));
 
@@ -40,31 +38,34 @@ namespace AEOI.Editor.Web.Server.Controllers
                 var previousFile = (Report)serializer.Deserialize(reader);
                 reader.Close();
 
-                //Convert the CurrentFile to Object
+                // Convert the currentFile to object
                 Report currentFile = (Report)serializer.Deserialize(file.OpenReadStream());
-                string response = comparisonService.CompareObjects(previousFile, currentFile);
+
+                //############# Two objects comparison #############
+                // Compare the differences two of objects | returns json string
+                //string response = comparisonService.CompareObjects(previousFile, currentFile);   
+
+                //############# Two XML comparison #############
+                // XMLDocument conversion
                 XmlDocument currentXml = SerializeToXmlDocument(currentFile);
                 XmlDocument previousXml = new XmlDocument();
                 previousXml.Load(path);
 
-
-                //string response = comparisonService.CompareXml(currentXml, previousXml);
-                //string response = comparisonService.CompareXmls(currentXml, previousXml);
-                //string response = comparisonService.XmlConvertToJsonAndCompare(currentXml, previousXml);
+                // Compare the differences two of XML | returns json string
+                string response = comparisonService.CompareXml(currentXml, previousXml);
 
                 return Ok(response);
             }
             catch (Exception ex)
             {
                 logger.LogError(ex.Message, ex);
-                Response.WriteAsync(ex.Message);
-                throw;
+                return BadRequest();
             }
         }
 
         public XmlDocument SerializeToXmlDocument(object input)
         {
-            XmlSerializer ser = new XmlSerializer(input.GetType(), "http://hmrc.gov.uk/AEOIUKSubmissionFIReport");
+            XmlSerializer ser = new XmlSerializer(input.GetType());
 
             XmlDocument xd = null;
 
