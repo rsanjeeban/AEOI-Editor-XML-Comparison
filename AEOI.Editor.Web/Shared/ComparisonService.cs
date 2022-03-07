@@ -28,10 +28,6 @@ namespace AEOI.Editor.Web.Shared
         {
             var diff = new XmlDiffLibrary.XmlDiff(previousXml.OuterXml, currentXml.OuterXml);
             diff.CompareDocuments(new XmlDiffLibrary.XmlDiffOptions());
-            diff.CompareDocuments(new XmlDiffLibrary.XmlDiffOptions()
-            {
-                TwoWayMatch = true
-            });
             return diff.ToString();
         }
     }

@@ -1,5 +1,5 @@
 <Report rule="AEOI-v1.3.rule">
-  <CustomerId>3003</CustomerId>
+  <CustomerId>4004</CustomerId>
   <Name>Standard.xlsx</Name>
   <Agreement>CRS</Agreement>
   <Mode>Actual></Mode>
@@ -7,7 +7,7 @@
   <Period start="2021-01-01" end="2021-12-31" />
   <Extensions>
     <ReportExtension>
-      <CanSubmitNilReturn>0</CanSubmitNilReturn>
+      <CanSubmitNilReturn>1</CanSubmitNilReturn>
     </ReportExtension>
   </Extensions>
   <ReportData>
@@ -19,8 +19,8 @@
         <Classification>Reporting FI</Classification>
         <Adresses>
           <Adress>
-            <BuildingIdentifier>123</BuildingIdentifier>
-            <StreetName>Any Street</StreetName>
+            <BuildingIdentifier>1234</BuildingIdentifier>
+            <StreetName>Any Street USA</StreetName>
             <City>George Town</City>
           </Adress>
         </Adresses>
@@ -38,12 +38,12 @@
                 <Number>1000000</Number>
                 <NumberType>IBAN</NumberType>
                 <Type>Custodial</Type>
-                <Status>Active</Status>
+                <Status>Inactive</Status>
                 <AccountHolders>
                     <Individual>
                         <Id>IN.11</Id>
                         <BirdthInfo>
-                            <City>London</City>
+                            <City>USA</City>
                         </BirdthInfo>
                     </Individual>
                 </AccountHolders>

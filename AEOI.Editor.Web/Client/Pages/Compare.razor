@@ -1,11 +1,19 @@
 ﻿@page "/compare"
 @inject NavigationManager NavigationManager
+@using System.IO
+@inject IJSRuntime JS
 
 <h1>Upload comparison file :</h1>
-<TelerikUpload SaveUrl="@SaveUrl" RemoveUrl="@RemoveUrl"
-               SaveField="file" RemoveField="fileToRemove"
-               AllowedExtensions="@( new List<string>() { ".xml" } )"
-               MaxFileSize="2048000" MinFileSize="1024">
+
+<TelerikUpload 
+    SaveUrl="@SaveUrl"
+    RemoveUrl="@RemoveUrl"
+    OnSuccess="@OnSuccessHandler"
+    SaveField="file"
+    RemoveField="fileToRemove"
+    AllowedExtensions="@( new List<string>() { ".xml" } )"
+    MaxFileSize="2048000"
+    MinFileSize="1024">
 </TelerikUpload>
 
 
@@ -18,5 +26,20 @@
     public string ToAbsoluteUrl(string url)
     {
         return $"{NavigationManager.BaseUri}{url}";
+    }
+    
+    async Task OnSuccessHandler(UploadSuccessEventArgs e)
+    {
+       var actionText = e.Operation == UploadOperationType.Upload ? "uploaded" : "removed";
+
+        foreach (var file in e.Files)
+        {
+            Console.WriteLine($"The file {file.Name} has been {actionText} successfully");
+            var fileURL = "{FILE URL}";
+            var fileName = file.Name;
+            await JS.InvokeVoidAsync("triggerFileDownload", fileName, fileURL);
+        }
+
+
     }
 }

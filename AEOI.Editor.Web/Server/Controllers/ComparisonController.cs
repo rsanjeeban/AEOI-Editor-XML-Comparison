@@ -1,7 +1,10 @@
 ﻿using AEOI.Editor.Web.Shared;
+using AEOI.Editor.Web.Shared.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
+using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -17,17 +20,20 @@ namespace AEOI.Editor.Web.Server.Controllers
         public string fileName = "AEOI CDF1.xml";
         public bool IsLarge = false;
         private readonly ILogger<UploadController> logger;
-        private ComparisonService comparisonService = new ComparisonService();
+        private ComparisonService comparisonService;
+        private PDFGenerator pdfGenerator;
         public ComparisonController(ILogger<UploadController> logger)
         {
             this.logger = logger;
+            this.pdfGenerator = new PDFGenerator();
+            this.comparisonService = new ComparisonService();
         }
 
         [HttpPost]
         public IActionResult Compare(IFormFile file)
         {
-            try
-            {
+            //try
+            //{
                 // Read The existing file
                 var path = Path.Combine("/tmp", "Uploads", fileName);
                 string fullpath = Path.GetFullPath(path);
@@ -51,16 +57,22 @@ namespace AEOI.Editor.Web.Server.Controllers
                 XmlDocument previousXml = new XmlDocument();
                 previousXml.Load(path);
 
+
                 // Compare the differences two of XML | returns json string
                 string response = comparisonService.CompareXml(currentXml, previousXml);
 
+                //FileStreamResult fileStreamResult = pdfGenerator.Generate(response);
+                XmlDifference xmlDifference = JsonConvert.DeserializeObject<XmlDifference>(response);
+                pdfGenerator.GeneratePdf(xmlDifference.DiffNodeList);
+
+                //return fileStreamResult;
                 return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex.Message, ex);
-                return BadRequest();
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    logger.LogError(ex.Message, ex);
+            //    throw;
+            //}
         }
 
         public XmlDocument SerializeToXmlDocument(object input)
