@@ -8,7 +8,7 @@ namespace AEOI.Editor.Web.Shared
     {
        
         // Compare Two Objects
-        public string CompareObjects(Report previousDocument, Report currentDocument)
+        public string CompareObjects(File previousDocument, File currentDocument)
         {
             // Used package for object comparison : KellermanSoftware.CompareNetObjects
             CompareLogic compareLogic = new CompareLogic();
@@ -20,6 +20,33 @@ namespace AEOI.Editor.Web.Shared
 
             return json;
         }
+
+        public string CompareAccounts(FileAccounts previousDocument, FileAccounts currentDocument)
+        {
+            // Used package for object comparison : KellermanSoftware.CompareNetObjects
+            CompareLogic compareLogic = new CompareLogic();
+            compareLogic.Config.MaxDifferences = 100;
+            ComparisonResult result = compareLogic.Compare(previousDocument, currentDocument);
+
+            //Convert the differences list to json string
+            var json = JsonConvert.SerializeObject(result.Differences);
+
+            return json;
+        }
+        public string CompareFis(FileFIs previousDocument, FileFIs currentDocument)
+        {
+            // Used package for object comparison : KellermanSoftware.CompareNetObjects
+            CompareLogic compareLogic = new CompareLogic();
+            compareLogic.Config.MaxDifferences = 100;
+            ComparisonResult result = compareLogic.Compare(previousDocument, currentDocument);
+
+            //Convert the differences list to json string
+            var json = JsonConvert.SerializeObject(result.Differences);
+
+            return json;
+        }
+
+
 
         private XmlDiffLibrary xmlDiffLibrary = new XmlDiffLibrary();
 

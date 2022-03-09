@@ -2,6 +2,7 @@
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.draw;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,76 +14,31 @@ namespace AEOI.Editor.Web.Shared
 {
     public class PDFGenerator
     {
-        public void Generate(string report)
+        private string userName;
+        private string snapShotName;
+        private string dateOfFileModified;
+        private string timeOfFileModified;
+
+        private FileFIs currentFis;
+        private File currentFile;
+        public PDFGenerator(string userName,string dateOfFileModified, string timeOfFileModified, string snapShotName, File file,FileFIs currentFis)
         {
-            //List<string> authors = new List<string>(5);
-            //authors.Add("Mahesh Chand");
-            //authors.Add("Chris Love");
-            //authors.Add("Allen O'neill");
-            //authors.Add("Naveen Sharma");
-            //authors.Add("Monica Rathbun");
-            //authors.Add("David McCarter");
+            this.userName = userName;
+            this.dateOfFileModified = dateOfFileModified;
+            this.timeOfFileModified = timeOfFileModified;
+            this.snapShotName = snapShotName;
 
-            ////Create a new Document
-            //using (PdfDocument pdfDocument = new PdfDocument())
-            //{
-            //    int paragraphAfterSpacing = 8;
-            //    int cellMargin = 8;
-
-            //    //Add page to the pdf document
-            //    PdfPage page = pdfDocument.Pages.Add();
-
-            //    //Create New Font
-            //    PdfStandardFont font = new PdfStandardFont(PdfFontFamily.TimesRoman, 16);
-
-            //    //Create a text element to draw a text in PDF page
-            //    PdfTextElement title = new PdfTextElement("Audit Report", font, PdfBrushes.Black);
-            //    PdfLayoutResult result = title.Draw(page, new PointF(0, 0));
-
-            //    PdfStandardFont contentFont = new PdfStandardFont(PdfFontFamily.TimesRoman, 12);
-            //    PdfLayoutFormat format = new PdfLayoutFormat();
-            //    format.Layout = PdfLayoutType.Paginate;
-
-            //    //Create a Pdf
-            //    PdfGrid pdfGrid = new PdfGrid();
-            //    pdfGrid.Style.CellPadding.Left = cellMargin;
-            //    pdfGrid.Style.CellPadding.Right = cellMargin;
-
-            //    // Applyting built in style to the PDF grid
-            //    pdfGrid.ApplyBuiltinStyle(PdfGridBuiltinStyle.GridTable4Accent1);
-
-            //    // Assigning Data Source
-            //    //pdfGrid.DataSource = authors;
-
-            //    pdfGrid.Style.Font = contentFont;
-
-            //    // Draw Pdf Grid into Pdf Page
-            //    //pdfGrid.Draw(page, new PointF(0, result.Bounds.Bottom + paragraphAfterSpacing));
-            //    pdfGrid.Draw(page, new PointF(0, 1));
-
-            //    using (MemoryStream stream = new MemoryStream())
-            //    {
-            //        pdfDocument.Save(stream);
-            //        pdfDocument.Close(true);
-            //        //Download the PDF document in the browser
-            //        FileStreamResult fileStreamResult = new FileStreamResult(stream, "application/pdf");
-
-            //        fileStreamResult.FileDownloadName = "Sample.pdf";
-
-            //        return fileStreamResult;
-            //    }
-
-
-
+            this.currentFile = file;
+            this.currentFis = currentFis;
         }
-
-        public void GeneratePdf(List<Difference> differences)
+        public void GeneratePdf(List<Difference> accountDifferences, List<Difference> fiDifferences)
         {
+            
             MemoryStream workStream = new MemoryStream();
 
-            DataTable dtblTableFi = MakeFiTable(differences);
-            DataTable dtblTableAccount = MakeAccountsTable(differences);
-            string strHeader = "Audit Trail Report ";
+            DataTable dtblTableFi = MakeFiTable(fiDifferences);
+            DataTable dtblTableAccount = MakeAccountsTable(accountDifferences);
+            string strHeader = "Audit Trail Report";
 
             System.IO.FileStream fs = new FileStream(@"E:\test.pdf", FileMode.Create, FileAccess.Write, FileShare.None);
 
@@ -112,12 +68,20 @@ namespace AEOI.Editor.Web.Shared
             
             Font fntReportDetails = new Font(bfntHead, 12, 2, BaseColor.BLACK);
 
-            document.Add(new Paragraph("Workflow Name: - CRS ", fntReportDetails));
-            document.Add(new Paragraph("Sending Country: -ALB ", fntReportDetails));
-            document.Add(new Paragraph("Report Type: - Correction ", fntReportDetails));
+            //Extract submission data
+            FileSubmissions submission = currentFile.Submissions;
+            FileSubmissionsSubmission submissionData = submission.Submission;
+            
+            //Get FileName
+            string workFlowName = currentFile.fileName;
+
+            document.Add(new Paragraph($"Workflow Name: - {workFlowName} ", fntReportDetails));
+            document.Add(new Paragraph($"Sending Country: - {submissionData.TransmittingCountry.Value} ", fntReportDetails));
+            document.Add(new Paragraph($"Report Type: - {submissionData.ReportType.Value} ", fntReportDetails));
             // Reporting period
-            Paragraph paraPeriod = new Paragraph("Reporting Period: - 2021-01-01 to 2021-12-31", fntReportDetails);
+            Paragraph paraPeriod = new Paragraph($"Reporting Period: - {submissionData.ReportStart.Value} to {submissionData.ReportEnd.Value}", fntReportDetails);
             paraPeriod.SpacingAfter = 10;
+            
             document.Add(paraPeriod);
 
             //Text : FI
@@ -257,11 +221,15 @@ namespace AEOI.Editor.Web.Shared
 
             //Populate with data
             int autoIncrement=0;
+
             differences.ForEach(item =>
             {
+                // Convert the account object to string
+                FileFIsFI Fi = JsonConvert.DeserializeObject<FileFIsFI> (item.Fi);
                 autoIncrement++;
-                differentTable.Rows.Add(autoIncrement, "-", "-", "-", "-", "-", "-", "-", item.ValueFrom, item.ValueTo, "-");
+                differentTable.Rows.Add(autoIncrement, dateOfFileModified, timeOfFileModified, userName, Fi.FIID.Value, Fi.Name.Value, CheckEvent(item.ValueFrom, item.ValueTo), item.LocalName, item.ValueFrom, item.ValueTo, snapShotName);
             });
+
             return differentTable;
         }
 
@@ -289,11 +257,40 @@ namespace AEOI.Editor.Web.Shared
             int autoIncrement = 0;
             differences.ForEach(item =>
             {
+                // Convert the account object to string
+                FileAccountsAccount Account = JsonConvert.DeserializeObject<FileAccountsAccount>(item.Account);
+
                 autoIncrement++;
-                fiTable.Rows.Add(autoIncrement, "-", "-", "-", "-","-", item.ValueFrom, item.ValueTo, "-", "-", "-", "-");
+                fiTable.Rows.Add(autoIncrement, dateOfFileModified, timeOfFileModified, userName, Account.FIID.Value, FindFiName(Account.FIID.Value), Account.AccountNumber.Value, Account.PersonType.Value, CheckEvent(item.ValueTo, item.ValueFrom),  item.LocalName, item.ValueTo, item.ValueFrom, snapShotName);
             });
 
             return fiTable;
+        }
+
+        private string FindFiName(string FIID)
+        {
+            string fiName=null;
+            foreach (FileFIsFI Fi in currentFis.FI){
+                if (Fi.FIID.Value == FIID)
+                {
+                    fiName = Fi.Name.Value;
+                    break;
+                }
+            }
+            return fiName;
+        }
+
+        public string CheckEvent(string From, string To)
+        {
+            if (To == "" | To == null)
+            {
+                return "Delete";
+            }
+            if (From == To)
+            {
+                return "N/A";
+            }
+            return "Edit";
         }
         
     }

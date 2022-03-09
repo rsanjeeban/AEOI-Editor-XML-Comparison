@@ -21,11 +21,18 @@ namespace AEOI.Editor.Web.Shared.Models
         [JsonProperty("Description")]
         public string Description { get; set; }
 
+        [JsonProperty("LocalName")]
+        public string LocalName { get; set; }
+        
         [JsonProperty("ValueFrom")]
         public string ValueFrom { get; set; }
 
         [JsonProperty("ValueTo")]
         public string ValueTo { get; set; }
+        [JsonProperty("Account")]
+        public string Account { get; set; }
+        [JsonProperty("Fi")]
+        public string Fi { get; set; }
 
         [JsonProperty("NodeType")]
         public string NodeType { get; set; }

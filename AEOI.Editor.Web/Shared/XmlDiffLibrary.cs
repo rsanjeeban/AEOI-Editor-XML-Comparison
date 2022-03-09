@@ -6,11 +6,15 @@ using System.Xml;
 using System.Xml.XPath;
 using System.Text.RegularExpressions;
 using System.IO;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Xml.Serialization;
 
 namespace AEOI.Editor.Web.Shared
 {
     public class XmlDiffLibrary
     {
+        
         public class XmlDiffNode
         {
             public enum DiffTypes { Removed, Added, Changed }
@@ -22,6 +26,10 @@ namespace AEOI.Editor.Web.Shared
             public string Comparison { get; set; }
             public string XPath { get; set; }
             public string Description { get; set; }
+            public FileAccountsAccount Account { get; set; } = null;
+            public FileFIsFI Fi { get; set; } = null;
+            public FileFIsFI FI { get; set; } = null;
+            public string LocalName { get; set; }
             public string ValueFrom { get; set; }
             public string ValueTo { get; set; }
             public int OriginLineNo { get; set; }
@@ -68,7 +76,6 @@ namespace AEOI.Editor.Web.Shared
                 MaxAttributesToDisplay = -1;
             }
         }
-
         public class XmlDiff
         {
             private XPathDocument xmlFromDoc;
@@ -78,6 +85,8 @@ namespace AEOI.Editor.Web.Shared
             private XmlDiffOptions options;
 
             public List<XmlDiffNode> DiffNodeList { get; set; }
+            
+
             public XmlDiff(string fromXml, string toXml, string sourceFromName = "FromXml", string sourceToName = "ToXml")
             {
                 try
@@ -109,6 +118,7 @@ namespace AEOI.Editor.Web.Shared
                         DiffNodeList.AddRange(tempNodeList.Where((node) => node.DiffType == XmlDiffNode.DiffTypes.Removed)
                                                           .Select((node) => { node.DiffType = XmlDiffNode.DiffTypes.Added; return node; }));
                     }
+
                 }
                 catch (Exception ex)
                 {
@@ -144,6 +154,7 @@ namespace AEOI.Editor.Web.Shared
                                     XPath = null,
                                     DiffType = XmlDiffNode.DiffTypes.Changed,
                                     Description = "No matching namespace @" + xFrom.NamespaceURI,
+                                    LocalName=null,
                                     ValueFrom = null,
                                     ValueTo = null,
                                     DiffNodeType = XmlDiffNode.DiffNodeTypes.Text,
@@ -162,6 +173,7 @@ namespace AEOI.Editor.Web.Shared
                                     XPath = null,
                                     DiffType = XmlDiffNode.DiffTypes.Changed,
                                     Description = "No matching attribute @" + xFrom.LocalName + " = " + xFrom.Value,
+                                    LocalName = null,
                                     ValueFrom = null,
                                     ValueTo = null,
                                     DiffNodeType = XmlDiffNode.DiffNodeTypes.Text,
@@ -185,6 +197,7 @@ namespace AEOI.Editor.Web.Shared
                                     XPath = null,
                                     DiffType = XmlDiffNode.DiffTypes.Changed,
                                     Description = "No matching attribute @" + xFrom.LocalName + " = " + xFrom.Value,
+                                    LocalName = null,
                                     ValueFrom = null,
                                     ValueTo = null,
                                     DiffNodeType = XmlDiffNode.DiffNodeTypes.Text,
@@ -279,10 +292,42 @@ namespace AEOI.Editor.Web.Shared
                 bool isMatch = false;
                 List<XPathNavigator> xMatch = new List<XPathNavigator>();
 
+                FileAccountsAccount Account = null;
+                FileFIsFI Fi = null;
+
+
                 while (xFromQueue.Count > 0 && xToQueue.Count > 0)
                 {
                     xFrom = xFromQueue.Dequeue();
                     xTo = xToQueue.Dequeue();
+
+                    
+                    // Extract the Account data
+                    if (xFrom.LocalName == "Account")
+                    {
+                        XmlRootAttribute xRoot = new XmlRootAttribute();
+                        xRoot.ElementName = "Account";
+                        xRoot.IsNullable = true;
+
+                        XmlSerializer serializer = new XmlSerializer(typeof(FileAccountsAccount), xRoot);
+                        using (StringReader reader = new StringReader("<Account>"+xFrom.InnerXml+"</Account>"))
+                        {
+                            Account = (FileAccountsAccount)(serializer.Deserialize(reader));
+                        }
+                    }
+                    // Extract the Fi data
+                    if (xFrom.LocalName == "FI")
+                    {
+                        XmlRootAttribute xRoot = new XmlRootAttribute();
+                        xRoot.ElementName = "FI";
+                        xRoot.IsNullable = true;
+
+                        XmlSerializer serializer = new XmlSerializer(typeof(FileFIsFI), xRoot);
+                        using (StringReader reader = new StringReader("<FI>" + xFrom.InnerXml+ "</FI>"))
+                        {
+                            Fi = (FileFIsFI)(serializer.Deserialize(reader));
+                        }
+                    }
 
                     do
                     {
@@ -303,10 +348,15 @@ namespace AEOI.Editor.Web.Shared
                                 XPathNavigator tempFrom, tempTo;
                                 tempFrom = xFrom.Clone();
                                 tempTo = xTo.Clone();
+                                string localName = tempFrom.LocalName;
                                 tempFrom.MoveToFirstChild();
                                 tempTo.MoveToFirstChild();
+
+                                
+
+
                                 XmlDiffNode result;
-                                if (!options.IgnoreNodes.Contains(XPathNodeType.Text) && !CompareText(tempFrom, tempTo, out result, ref diffNumber))
+                                if (!options.IgnoreNodes.Contains(XPathNodeType.Text) && !CompareText(tempFrom, tempTo, out result, ref diffNumber, Account, Fi, localName))
                                 {
                                     diffNodeList.Add(result);
                                 }
@@ -323,8 +373,10 @@ namespace AEOI.Editor.Web.Shared
                                     XPath = GetXPath(xFrom),
                                     DiffType = XmlDiffNode.DiffTypes.Removed,
                                     Description = "Node children not found",
+                                    LocalName = "",
                                     ValueFrom = "",
                                     ValueTo = "",
+                                    Account = Account,
                                     DiffNodeType = XmlDiffNode.DiffNodeTypes.Tag,
                                     Origin = fromFilename,
                                     Comparison = toFilename,
@@ -355,8 +407,10 @@ namespace AEOI.Editor.Web.Shared
                                     XPath = GetXPath(xFrom),
                                     DiffType = XmlDiffNode.DiffTypes.Removed,
                                     Description = "No matching node found.",
+                                    LocalName = null,
                                     ValueFrom = null,
                                     ValueTo = null,
+                                    Account = Account,
                                     DiffNodeType = XmlDiffNode.DiffNodeTypes.Node,
                                     Descendants = (options.MatchDescendants) ? bestMatchNode.Item2 : null,
                                     Origin = fromFilename,
@@ -380,8 +434,10 @@ namespace AEOI.Editor.Web.Shared
                                     XPath = GetXPath(xFrom),
                                     DiffType = XmlDiffNode.DiffTypes.Removed,
                                     Description = "Node not found",
+                                    LocalName = null,
                                     ValueFrom = null,
                                     ValueTo = null,
+                                    Account = Account,
                                     DiffNodeType = XmlDiffNode.DiffNodeTypes.Tag,
                                     Origin = fromFilename,
                                     Comparison = toFilename,
@@ -400,8 +456,10 @@ namespace AEOI.Editor.Web.Shared
                                     XPath = GetXPath(xFrom),
                                     DiffType = XmlDiffNode.DiffTypes.Removed,
                                     Description = "Node not found",
+                                    LocalName = null,
                                     ValueFrom = null,
                                     ValueTo = null,
+                                    Account = Account,
                                     DiffNodeType = XmlDiffNode.DiffNodeTypes.Tag,
                                     Origin = fromFilename,
                                     Comparison = toFilename,
@@ -422,11 +480,12 @@ namespace AEOI.Editor.Web.Shared
                     fromList.Add(node);
             }
 
-            private bool CompareText(XPathNavigator xmlFromNav, XPathNavigator xmlToNav, out XmlDiffNode result, ref int diffNumber)
+            private bool CompareText(XPathNavigator xmlFromNav, XPathNavigator xmlToNav, out XmlDiffNode result, ref int diffNumber, FileAccountsAccount Account, FileFIsFI Fi,string localName)
             {
                 XPathNavigator xFrom = xmlFromNav.Clone();
                 XPathNavigator xTo = xmlToNav.Clone();
                 result = new XmlDiffNode();
+               
 
                 if (xFrom.NodeType == XPathNodeType.Text && xTo.NodeType == XPathNodeType.Text)
                 {
@@ -437,8 +496,11 @@ namespace AEOI.Editor.Web.Shared
                             XPath = GetXPath(xFrom),
                             DiffType = XmlDiffNode.DiffTypes.Changed,
                             Description = "Text node does not match  |  " + xFrom.Value.Trim() + " => " + xTo.Value.Trim(),
+                            LocalName= localName,
                             ValueFrom = xFrom.Value.Trim(),
                             ValueTo = xTo.Value.Trim(),
+                            Account = Account,
+                            Fi = Fi,
                             DiffNodeType = XmlDiffNode.DiffNodeTypes.Text,
                             Origin = fromFilename,
                             Comparison = toFilename,
@@ -718,9 +780,18 @@ namespace AEOI.Editor.Web.Shared
 
                 diffLine.AppendLine("\"Description\": " + "\"" + EscapeQuotes(node.Description) + "\",");
 
+                diffLine.AppendLine("\"LocalName\": " + "\"" + EscapeQuotes(node.LocalName) + "\",");
                 diffLine.AppendLine("\"ValueFrom\": " + "\"" + EscapeQuotes(node.ValueFrom) + "\",");
 
                 diffLine.AppendLine("\"ValueTo\": " + "\"" + EscapeQuotes(node.ValueTo) + "\",");
+
+                // Convert the account object to string
+                string account = JsonConvert.SerializeObject(node.Account);
+                diffLine.AppendLine("\"Account\": " + "\"" + EscapeQuotes(account) + "\",");
+                
+                // Convert the Fi object to string
+                string fi = JsonConvert.SerializeObject(node.Fi);
+                diffLine.AppendLine("\"Fi\": " + "\"" + EscapeQuotes(fi) + "\",");
 
                 diffLine.AppendLine("\"Node Type\": " + "\"" + node.DiffNodeType + "\",");
 
