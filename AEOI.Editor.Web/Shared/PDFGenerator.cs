@@ -42,6 +42,7 @@ namespace AEOI.Editor.Web.Shared
             DataTable dtblTableFi = MakeFiTable(fiDifferences);
             DataTable dtblTableAccount = MakeAccountsTable(accountDifferences);
             DataTable dtblTableNewAccount = MakeAccountsTable(accountDifferences, true);
+            DataTable dtblTableDeletedAccount = MakeAccountsTable(accountDifferences, false,true);
 
             string strHeader = "Audit Trail Report";
 
@@ -259,6 +260,58 @@ namespace AEOI.Editor.Web.Shared
                 document.Add(tableNewAccount);
             }
 
+            /* ------------------------ Add Table 4 for "Deleted Accounts" ------------------------ */
+
+            if (dtblTableDeletedAccount.Rows.Count != 0)
+            {
+                // Text : Account
+                Paragraph prgDeletedAccount = new Paragraph();
+                prgDeletedAccount.Alignment = Element.ALIGN_LEFT;
+                Paragraph ParaDeletedAccountTitle = new Paragraph("Deleted Accounts", fntTableTitle);
+                ParaDeletedAccountTitle.SpacingBefore = 10;
+                ParaDeletedAccountTitle.SpacingAfter = 15;
+                prgDeletedAccount.Add(ParaDeletedAccountTitle);
+                document.Add(prgDeletedAccount);
+
+                // Write the table
+                PdfPTable tableNewAccount = new PdfPTable(dtblTableDeletedAccount.Columns.Count);
+                tableNewAccount.WidthPercentage = 100;
+
+                // Table header
+                BaseFont btnColumnHeader3 = BaseFont.CreateFont(BaseFont.TIMES_ROMAN, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+                Font fntColumnHeader3 = new Font(btnColumnHeader3, 10, 1, BaseColor.WHITE);
+
+                for (int i = 0; i < dtblTableDeletedAccount.Columns.Count; i++)
+                {
+                    //Skip the time field due to colspan
+                    if (dtblTableDeletedAccount.Columns[i].ColumnName != "Time")
+                    {
+                        PdfPCell cell = new PdfPCell(new Paragraph(dtblTableDeletedAccount.Columns[i].ColumnName, fntTable));
+                        cell.BorderWidth = 1;
+                        // Colspan for date field
+                        if (dtblTableDeletedAccount.Columns[i].ColumnName == "Date")
+                        {
+                            cell.Colspan = 2;
+                        }
+                        tableNewAccount.AddCell(cell);
+                    }
+
+                }
+                // Table Data
+                for (int i = 0; i < dtblTableDeletedAccount.Rows.Count; i++)
+                {
+                    for (int j = 0; j < dtblTableDeletedAccount.Columns.Count; j++)
+                    {
+                        //tableAccount.AddCell(dtblTableDeletedAccount.Rows[i][j].ToString());
+                        PdfPCell cell = new PdfPCell(new Paragraph(dtblTableDeletedAccount.Rows[i][j].ToString(), fntTable));
+                        cell.BorderWidth = 1;
+                        tableNewAccount.AddCell(cell);
+                    }
+                }
+
+                document.Add(tableNewAccount);
+            }
+
 
 
             document.Close();
@@ -309,7 +362,7 @@ namespace AEOI.Editor.Web.Shared
             return differentTable;
         }
 
-        DataTable MakeAccountsTable(List<Difference> differences, bool onlyNew = false)
+        DataTable MakeAccountsTable(List<Difference> differences, bool onlyNew = false, bool onlyDeleted = false)
         {
             //Create account table object
             DataTable fiTable = new DataTable();
@@ -324,7 +377,7 @@ namespace AEOI.Editor.Web.Shared
             fiTable.Columns.Add("Account Number");
             fiTable.Columns.Add("Name of account holder /Controlling person");
             fiTable.Columns.Add("Event");
-            if (!onlyNew)
+            if (!onlyNew && !onlyDeleted)
             {
                 fiTable.Columns.Add("Field Name");
                 fiTable.Columns.Add("Previous Value");
@@ -339,12 +392,12 @@ namespace AEOI.Editor.Web.Shared
                 // Convert the account : string to object
                 FileAccountsAccount Account = JsonConvert.DeserializeObject<FileAccountsAccount>(item.Account);
                 
-                if (item.Edit == "Delete" && !onlyNew)
+                if (item.Edit == "Delete" && onlyDeleted)
                 {
                     autoIncrement++;
-                    fiTable.Rows.Add(autoIncrement, dateOfFileModified, timeOfFileModified, userName, Account.FIID.Value, FindFiName(Account.FIID.Value), Account.AccountNumber.Value, Account.PersonType.Value, item.Edit, item.LocalName, item.ValueTo, item.ValueFrom, snapShotName);
+                    fiTable.Rows.Add(autoIncrement, dateOfFileModified, timeOfFileModified, userName, Account.FIID.Value, FindFiName(Account.FIID.Value), Account.AccountNumber.Value, Account.PersonType.Value, item.Edit, snapShotName);
                 }
-                else if (item.Edit == "Edit" && !onlyNew)
+                else if (item.Edit == "Edit" && !onlyNew && !onlyDeleted)
                 {
                     autoIncrement++;
                     fiTable.Rows.Add(autoIncrement, dateOfFileModified, timeOfFileModified, userName, Account.FIID.Value, FindFiName(Account.FIID.Value), Account.AccountNumber.Value, Account.PersonType.Value, item.Edit, item.LocalName, item.ValueTo, item.ValueFrom, snapShotName);

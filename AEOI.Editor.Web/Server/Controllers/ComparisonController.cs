@@ -36,8 +36,8 @@ namespace AEOI.Editor.Web.Server.Controllers
             string dateOfFileModified = "02/03/2022";
             string timeOfFileModified = "09.32 AM";
 
-            try
-            {
+            //try
+            //{
                 // Read The existing file
                 var path = Path.Combine("/tmp", "Uploads", fileName);
                 string fullpath = Path.GetFullPath(path);
@@ -110,12 +110,12 @@ namespace AEOI.Editor.Web.Server.Controllers
                 //return fileStreamResult;
 
                 return Ok(fileSaveLocation);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex.Message, ex);
-                return BadRequest();
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    logger.LogError(ex.Message, ex);
+            //    return BadRequest();
+            //}
         }
 
         public XmlDocument SerializeToXmlDocument(object input)

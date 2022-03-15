@@ -29,16 +29,16 @@ Application: XlsxToXml2Application.cs
       <Type column="B">Submitter</Type>
       <IdentificationNumber column="E">BOL0000000001</IdentificationNumber>
       <AccountID column="F">1122334455</AccountID>
-      <BuildingIdentifier column="G">555</BuildingIdentifier>
+      <BuildingIdentifier column="G">222</BuildingIdentifier>
       <Street column="H">Live street</Street>
       <DistrictName column="I" />
       <City column="J">Antwerp</City>
       <PostCode column="K">1100</PostCode>
-      <CountryCode column="L">GBR</CountryCode>
+      <CountryCode column="L">LK</CountryCode>
       <FILabels column="P" />
       <OriginalDocRefId column="O" />
       <OriginalMessageRef />
-      <DormantAccountElection column="N">No</DormantAccountElection>
+      <DormantAccountElection column="N">Yes</DormantAccountElection>
       <InsuranceElection column="M">No</InsuranceElection>
     </FI>
     <FI row="12">
