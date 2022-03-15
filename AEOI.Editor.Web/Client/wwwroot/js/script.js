@@ -8,7 +8,9 @@
     URL.revokeObjectURL(url);
 }
 
-function triggerFileDownload(fileName, url) {
+function triggerFileDownload(fileName, url,event) {
+    console.log("triggered function : triggerFileDownload");
+    console.log("Event: ", event);
     const anchorElement = document.createElement('a');
     anchorElement.href = url;
     anchorElement.download = fileName ?? '';

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace AEOI.Editor.Web.Shared.Models
 {
+    public enum DiffTypes { Removed, Added, Changed }
     public class XmlDifference
     {
         public List<Difference> DiffNodeList { get; set; }
@@ -14,6 +15,7 @@ namespace AEOI.Editor.Web.Shared.Models
 
         [JsonProperty("XPath")]
         public string XPath { get; set; }
+        public DiffTypes DiffType { get; set; }
 
         [JsonProperty("DiffID")]
         public string DiffID { get; set; }

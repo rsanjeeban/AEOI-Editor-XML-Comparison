@@ -54,7 +54,14 @@ namespace AEOI.Editor.Web.Shared
         public string CompareXml(XmlDocument previousXml, XmlDocument currentXml)
         {
             var diff = new XmlDiffLibrary.XmlDiff(previousXml.OuterXml, currentXml.OuterXml);
-            diff.CompareDocuments(new XmlDiffLibrary.XmlDiffOptions());
+            diff.CompareDocuments(new XmlDiffLibrary.XmlDiffOptions()
+            {
+                TwoWayMatch=true,
+                TrimWhitespace=true,
+                IgnoreNamespace=true,
+                IgnoreAttributeOrder=true,
+                IgnoreChildOrder=true
+            });
             return diff.ToString();
         }
     }

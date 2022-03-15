@@ -7,7 +7,6 @@ using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using System;
 using System.IO;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -25,7 +24,7 @@ namespace AEOI.Editor.Web.Server.Controllers
         public ComparisonController(ILogger<UploadController> logger)
         {
             this.logger = logger;
-            
+
             this.comparisonService = new ComparisonService();
         }
 
@@ -37,85 +36,86 @@ namespace AEOI.Editor.Web.Server.Controllers
             string dateOfFileModified = "02/03/2022";
             string timeOfFileModified = "09.32 AM";
 
-            //try
-            //{
-            // Read The existing file
-            var path = Path.Combine("/tmp", "Uploads", fileName);
-            string fullpath = Path.GetFullPath(path);
+            try
+            {
+                // Read The existing file
+                var path = Path.Combine("/tmp", "Uploads", fileName);
+                string fullpath = Path.GetFullPath(path);
 
-            XmlRootAttribute xRoot = new XmlRootAttribute();
-            xRoot.ElementName = "File";
-            //xRoot.Namespace = "http://www.cpandl.com";
-            xRoot.IsNullable = true;
+                XmlRootAttribute xRoot = new XmlRootAttribute();
+                xRoot.ElementName = "File";
+                //xRoot.Namespace = "http://www.cpandl.com";
+                xRoot.IsNullable = true;
 
-            XmlSerializer serializer = new XmlSerializer(typeof(File), xRoot);
+                XmlSerializer serializer = new XmlSerializer(typeof(File), xRoot);
 
-            StreamReader reader = new StreamReader(path);
-            var previousFile = (File)serializer.Deserialize(reader);
-            reader.Close();
+                StreamReader reader = new StreamReader(path);
+                var previousFile = (File)serializer.Deserialize(reader);
+                reader.Close();
 
-            //get the snapShot name from file name
-            var fileContent = ContentDispositionHeaderValue.Parse(file.ContentDisposition);
-            var newFileName = Path.GetFileName(fileContent.FileName.ToString().Trim('"'));
-            string[] splitNames = newFileName.Split(' ','.');
-            string snapShotName= splitNames.Length > 2 ? splitNames[splitNames.Length - 2] : "N/A";
-
-
-            // Convert the currentFile to object
-            File currentFile = (File)serializer.Deserialize(file.OpenReadStream());
-
-            string workFlowName = currentFile.fileName;
-            FileSubmissions submission = currentFile.Submissions;
-            FileAccounts currentAccounts = currentFile.Accounts;
-            FileAccounts previousAccounts = previousFile.Accounts;
-            //############# objects comparison #############
-            //string accountDifference = comparisonService.CompareAccounts(currentAccounts, previousAccounts);
-
-            FileFIs currentFis = currentFile.FIs;
-            FileFIs previousFis = previousFile.FIs;
-            //string fiDifference = comparisonService.CompareFis(currentFis, previousFis);
-
-            // Compare the differences two of objects | returns json string
-            //string response = comparisonService.CompareObjects(previousFile, currentFile);   
-
-            //############# Two XML comparison #############
-            XmlDocument currentAccountXml = SerializeToXmlDocument(currentAccounts);
-            XmlDocument previousAccountXml = SerializeToXmlDocument(previousAccounts);
-            string xmlAccountDifference = comparisonService.CompareXml(currentAccountXml, previousAccountXml);
-            // Deserilize to string to object
-            XmlDifference accountDifferenceAsObject = JsonConvert.DeserializeObject<XmlDifference>(xmlAccountDifference);
-
-            XmlDocument currentFiXml = SerializeToXmlDocument(currentFis);
-            XmlDocument previousFiXml = SerializeToXmlDocument(previousFis);
-            string xmlFiDifference = comparisonService.CompareXml(currentFiXml, previousFiXml);
-
-            // Deserilize to string to object
-            XmlDifference fiDifferenceAsObject = JsonConvert.DeserializeObject<XmlDifference>(xmlFiDifference);
+                //get the snapShot name from file name
+                var fileContent = ContentDispositionHeaderValue.Parse(file.ContentDisposition);
+                var newFileName = Path.GetFileName(fileContent.FileName.ToString().Trim('"'));
+                string[] splitNames = newFileName.Split(' ', '.');
+                string snapShotName = splitNames.Length > 2 ? splitNames[splitNames.Length - 2] : "N/A";
 
 
-            // XMLDocument conversion
-            XmlDocument currentXml = SerializeToXmlDocument(currentFile);
-            XmlDocument previousXml = new XmlDocument();
-            previousXml.Load(path);
+                // Convert the currentFile to object
+                File currentFile = (File)serializer.Deserialize(file.OpenReadStream());
 
-            // Compare the differences two of XML | returns json string
-            string response = comparisonService.CompareXml(currentXml, previousXml);
+                string workFlowName = currentFile.fileName;
+                FileSubmissions submission = currentFile.Submissions;
+                FileAccounts currentAccounts = currentFile.Accounts;
+                FileAccounts previousAccounts = previousFile.Accounts;
+                //############# objects comparison #############
+                //string accountDifference = comparisonService.CompareAccounts(currentAccounts, previousAccounts);
 
-            //FileStreamResult fileStreamResult = pdfGenerator.Generate(response);
-            XmlDifference xmlDifference = JsonConvert.DeserializeObject<XmlDifference>(response);
+                FileFIs currentFis = currentFile.FIs;
+                FileFIs previousFis = previousFile.FIs;
+                //string fiDifference = comparisonService.CompareFis(currentFis, previousFis);
 
-            //Initialize the PDFGenerator
-            this.pdfGenerator = new PDFGenerator(userName, dateOfFileModified,timeOfFileModified, snapShotName, currentFile, currentFis);
-            pdfGenerator.GeneratePdf(accountDifferenceAsObject.DiffNodeList, fiDifferenceAsObject.DiffNodeList);
+                // Compare the differences two of objects | returns json string
+                //string response = comparisonService.CompareObjects(previousFile, currentFile);   
 
-            //return fileStreamResult;
-            return Ok(xmlFiDifference);
-            //}
-            //catch (Exception ex)
-            //{
-            //    logger.LogError(ex.Message, ex);
-            //    throw;
-            //}
+                //############# Two XML comparison #############
+                XmlDocument currentAccountXml = SerializeToXmlDocument(currentAccounts);
+                XmlDocument previousAccountXml = SerializeToXmlDocument(previousAccounts);
+                string xmlAccountDifference = comparisonService.CompareXml(previousAccountXml,currentAccountXml);
+                // Deserilize to string to object
+                XmlDifference accountDifferenceAsObject = JsonConvert.DeserializeObject<XmlDifference>(xmlAccountDifference);
+
+                XmlDocument currentFiXml = SerializeToXmlDocument(currentFis);
+                XmlDocument previousFiXml = SerializeToXmlDocument(previousFis);
+                string xmlFiDifference = comparisonService.CompareXml(previousFiXml, currentFiXml);
+
+                // Deserilize to string to object
+                XmlDifference fiDifferenceAsObject = JsonConvert.DeserializeObject<XmlDifference>(xmlFiDifference);
+
+
+                // XMLDocument conversion
+                XmlDocument currentXml = SerializeToXmlDocument(currentFile);
+                XmlDocument previousXml = new XmlDocument();
+                previousXml.Load(path);
+
+                // Compare the differences two of XML | returns json string
+                string response = comparisonService.CompareXml(previousXml, currentXml);
+
+                //FileStreamResult fileStreamResult = pdfGenerator.Generate(response);
+                XmlDifference xmlDifference = JsonConvert.DeserializeObject<XmlDifference>(response);
+
+                //Initialize the PDFGenerator
+                this.pdfGenerator = new PDFGenerator(userName, dateOfFileModified, timeOfFileModified, snapShotName, currentFile, currentFis);
+                string fileSaveLocation = pdfGenerator.GeneratePdf(accountDifferenceAsObject.DiffNodeList, fiDifferenceAsObject.DiffNodeList);
+
+                //return fileStreamResult;
+
+                return Ok(fileSaveLocation);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message, ex);
+                return BadRequest();
+            }
         }
 
         public XmlDocument SerializeToXmlDocument(object input)
@@ -143,7 +143,7 @@ namespace AEOI.Editor.Web.Server.Controllers
             return xd;
         }
 
-        
+
     }
 }
 

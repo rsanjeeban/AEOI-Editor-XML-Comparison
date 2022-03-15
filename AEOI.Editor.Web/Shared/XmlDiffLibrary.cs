@@ -116,7 +116,8 @@ namespace AEOI.Editor.Web.Shared
                     {
                         List<XmlDiffNode> tempNodeList = CompareNodes(xmlToDoc.CreateNavigator(), xmlFromDoc.CreateNavigator());
                         DiffNodeList.AddRange(tempNodeList.Where((node) => node.DiffType == XmlDiffNode.DiffTypes.Removed)
-                                                          .Select((node) => { node.DiffType = XmlDiffNode.DiffTypes.Added; return node; }));
+                                                          .Select((node) => { node.DiffType = XmlDiffNode.DiffTypes.Added;
+                                                              return node; }));
                     }
 
                 }
@@ -284,6 +285,8 @@ namespace AEOI.Editor.Web.Shared
 
                 XPathNavigator xFrom = xmlFromNav.Clone();
                 XPathNavigator xTo = xmlToNav.Clone();
+                string parentlocalName = xFrom.LocalName;
+
                 xFrom.MoveToChild(XPathNodeType.Element);
                 xTo.MoveToChild(XPathNodeType.Element);
                 xFromQueue.Enqueue(xFrom.Clone());
@@ -373,7 +376,7 @@ namespace AEOI.Editor.Web.Shared
                                     XPath = GetXPath(xFrom),
                                     DiffType = XmlDiffNode.DiffTypes.Removed,
                                     Description = "Node children not found",
-                                    LocalName = "",
+                                    LocalName = parentlocalName,
                                     ValueFrom = "",
                                     ValueTo = "",
                                     Account = Account,
@@ -407,7 +410,7 @@ namespace AEOI.Editor.Web.Shared
                                     XPath = GetXPath(xFrom),
                                     DiffType = XmlDiffNode.DiffTypes.Removed,
                                     Description = "No matching node found.",
-                                    LocalName = null,
+                                    LocalName = parentlocalName,
                                     ValueFrom = null,
                                     ValueTo = null,
                                     Account = Account,
@@ -434,7 +437,7 @@ namespace AEOI.Editor.Web.Shared
                                     XPath = GetXPath(xFrom),
                                     DiffType = XmlDiffNode.DiffTypes.Removed,
                                     Description = "Node not found",
-                                    LocalName = null,
+                                    LocalName = parentlocalName,
                                     ValueFrom = null,
                                     ValueTo = null,
                                     Account = Account,
@@ -447,7 +450,7 @@ namespace AEOI.Editor.Web.Shared
                                     Descendants = new List<XmlDiffNode>() { nodeInfo }
                                 });
 
-                                diffNodeList.Add(nodeInfo);
+                                //diffNodeList.Add(nodeInfo);
                             }
                             else
                             {
@@ -456,7 +459,7 @@ namespace AEOI.Editor.Web.Shared
                                     XPath = GetXPath(xFrom),
                                     DiffType = XmlDiffNode.DiffTypes.Removed,
                                     Description = "Node not found",
-                                    LocalName = null,
+                                    LocalName = parentlocalName,
                                     ValueFrom = null,
                                     ValueTo = null,
                                     Account = Account,
@@ -634,6 +637,10 @@ namespace AEOI.Editor.Web.Shared
 
             private string EscapeQuotes(string s)
             {
+                if (s == null)
+                {
+                    return null;
+                }
                 char[] str = new char[s.Length * 2];
                 int c_idx = 0;
                 for (int idx = 0; idx < s.Length; idx++, c_idx++)
@@ -768,7 +775,7 @@ namespace AEOI.Editor.Web.Shared
                         diffLine.AppendLine("\"Insert\",");
                         break;
                     case XmlDiffNode.DiffTypes.Changed:
-                        diffLine.AppendLine("\"Update\",");
+                        diffLine.AppendLine("\"Edit\",");
                         break;
                     default:
                         break;
