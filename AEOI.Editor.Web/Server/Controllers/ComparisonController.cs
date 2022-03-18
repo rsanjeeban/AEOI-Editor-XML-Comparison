@@ -20,7 +20,7 @@ namespace AEOI.Editor.Web.Server.Controllers
         public bool IsLarge = false;
         private readonly ILogger<UploadController> logger;
         private ComparisonService comparisonService;
-        private PDFGenerator pdfGenerator;
+        private FileGenerator fileGenerator;
         public ComparisonController(ILogger<UploadController> logger)
         {
             this.logger = logger;
@@ -100,23 +100,27 @@ namespace AEOI.Editor.Web.Server.Controllers
                 // Compare the differences two of XML | returns json string
                 string response = comparisonService.CompareXml(previousXml, currentXml);
 
-                //FileStreamResult fileStreamResult = pdfGenerator.Generate(response);
                 XmlDifference xmlDifference = JsonConvert.DeserializeObject<XmlDifference>(response);
 
-                //Initialize the PDFGenerator
-                this.pdfGenerator = new PDFGenerator(userName, dateOfFileModified, timeOfFileModified, snapShotName, currentFile, currentFis);
-                string fileSaveLocation = pdfGenerator.GeneratePdf(accountDifferenceAsObject.DiffNodeList, fiDifferenceAsObject.DiffNodeList);
+                string fileSaveLocation;
+
+                //Initialize the FileGenerator
+                fileGenerator = new FileGenerator(userName, dateOfFileModified, timeOfFileModified, snapShotName, currentFile, currentFis, accountDifferenceAsObject.DiffNodeList, fiDifferenceAsObject.DiffNodeList);
+                fileSaveLocation = fileGenerator.GeneratePdf();
+
+                //Initialize the Excel generator
+                fileSaveLocation = fileGenerator.GenerateExcel();
 
                 //return fileStreamResult;
 
                 return Ok(fileSaveLocation);
-            //}
-            //catch (Exception ex)
-            //{
-            //    logger.LogError(ex.Message, ex);
-            //    return BadRequest();
-            //}
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        logger.LogError(ex.Message, ex);
+        //        return BadRequest();
+        //}
+}
 
         public XmlDocument SerializeToXmlDocument(object input)
         {

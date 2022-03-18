@@ -4,15 +4,15 @@ using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.draw;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Data;
-//using Syncfusion.Drawing;
 using System.IO;
-//using System;
+using System.Data;
+using System.Collections.Generic;
+using Excel = Microsoft.Office.Interop.Excel;
+using System.Reflection;
 
 namespace AEOI.Editor.Web.Shared
 {
-    public class PDFGenerator
+    public class FileGenerator
     {
         private string userName;
         private string snapShotName;
@@ -21,7 +21,13 @@ namespace AEOI.Editor.Web.Shared
 
         private FileFIs currentFis;
         private File currentFile;
-        public PDFGenerator(string userName, string dateOfFileModified, string timeOfFileModified, string snapShotName, File file, FileFIs currentFis)
+
+        private DataTable dtblTableFi;
+        private DataTable dtblTableAccount;
+        private DataTable dtblTableNewAccount;
+        private DataTable dtblTableDeletedAccount;
+
+        public FileGenerator(string userName, string dateOfFileModified, string timeOfFileModified, string snapShotName, File file, FileFIs currentFis, List<Difference> accountDifferences, List<Difference> fiDifferences)
         {
             this.userName = userName;
             this.dateOfFileModified = dateOfFileModified;
@@ -30,19 +36,19 @@ namespace AEOI.Editor.Web.Shared
 
             this.currentFile = file;
             this.currentFis = currentFis;
+
+            // Define the data tables
+            this.dtblTableFi = MakeFiTable(fiDifferences);
+            this.dtblTableAccount = MakeAccountsTable(accountDifferences);
+            this.dtblTableNewAccount = MakeAccountsTable(accountDifferences, true);
+            this.dtblTableDeletedAccount = MakeAccountsTable(accountDifferences, false, true);
         }
-        public string GeneratePdf(List<Difference> accountDifferences, List<Difference> fiDifferences)
+        public string GeneratePdf()
         {
             //string fileSaveLocation = "E:\\test.pdf";
             string fileSaveLocation = Path.GetFullPath(".\\pdf\\report.pdf");
 
             MemoryStream workStream = new MemoryStream();
-
-            // Define the data tables
-            DataTable dtblTableFi = MakeFiTable(fiDifferences);
-            DataTable dtblTableAccount = MakeAccountsTable(accountDifferences);
-            DataTable dtblTableNewAccount = MakeAccountsTable(accountDifferences, true);
-            DataTable dtblTableDeletedAccount = MakeAccountsTable(accountDifferences, false,true);
 
             string strHeader = "Audit Trail Report";
 
@@ -377,6 +383,7 @@ namespace AEOI.Editor.Web.Shared
             fiTable.Columns.Add("Account Number");
             fiTable.Columns.Add("Name of account holder /Controlling person");
             fiTable.Columns.Add("Event");
+
             if (!onlyNew && !onlyDeleted)
             {
                 fiTable.Columns.Add("Field Name");
@@ -439,6 +446,162 @@ namespace AEOI.Editor.Web.Shared
             return "Edit";
         }
 
+
+
+        /*-------------------- Generate Excel --------------------*/
+
+        public string GenerateExcel()
+        {
+            string fileSaveLocation = Path.GetFullPath(".\\excel\\report.xls");
+            Console.WriteLine("Triggered GenerateExcel");
+
+            //Excel.Application xlApp = new Microsoft.Office.Interop.Excel.Application();
+
+            //if (xlApp == null)
+            //{
+            //    //logger.LogInformation("Excel is not properly installed!!");
+            //    Console.WriteLine("Excel is not properly installed!!");
+            //    return null;
+            //}
+
+            //Excel.Workbook xlWorkBook;
+            //Excel.Worksheet xlWorkSheet;
+            //object misValue = System.Reflection.Missing.Value;
+
+            //xlWorkBook = xlApp.Workbooks.Add(misValue);
+            //xlWorkBook = xlApp.Workbooks.Add(misValue);
+            //xlWorkBook = xlApp.Workbooks.Add(misValue);
+            //xlWorkBook = xlApp.Workbooks.Add(misValue);
+            //xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(1);
+
+            //// Column headings
+            //for (var i = 0; i < dtblTableFi.Columns.Count; i++) {
+            //    xlWorkSheet.Cells[1, i + 1] = dtblTableFi.Columns[i].ColumnName;
+            //}
+
+            //// rows
+            //for (var i = 0; i < dtblTableFi.Rows.Count; i++) {
+            //    // to do: format datetime values before printing
+            //    for (var j = 0; j < dtblTableFi.Columns.Count; j++) {
+            //        xlWorkSheet.Cells[i + 2, j + 1] = dtblTableFi.Rows[i][j];
+            //    }
+            //}
+
+            ////Excel.Worksheet xlAccountWorkSheet;
+            //xlWorkBook = xlApp.Workbooks.Add(misValue);
+            //xlWorkSheet = (Excel.Worksheet)xlWorkBook.Worksheets.get_Item(2);
+
+            //// Column headings
+            //for (var i = 0; i < dtblTableAccount.Columns.Count; i++)
+            //{
+            //    xlWorkSheet.Cells[1, i + 1] = dtblTableAccount.Columns[i].ColumnName;
+            //}
+
+            //// rows
+            //for (var i = 0; i < dtblTableAccount.Rows.Count; i++)
+            //{
+            //    // to do: format datetime values before printing
+            //    for (var j = 0; j < dtblTableAccount.Columns.Count; j++)
+            //    {
+            //        xlWorkSheet.Cells[i + 2, j + 1] = dtblTableAccount.Rows[i][j];
+            //    }
+            //}
+
+
+
+
+            ////xlWorkSheet.Cells[1, 1] = "ID";
+            ////xlWorkSheet.Cells[1, 2] = "Name";
+            ////xlWorkSheet.Cells[2, 1] = "1";
+            ////xlWorkSheet.Cells[2, 2] = "One";
+            ////xlWorkSheet.Cells[3, 1] = "2";
+            ////xlWorkSheet.Cells[3, 2] = "Two";
+
+
+            //string fileSaveLocation = Path.GetFullPath(".\\excel\\report.xls");
+            //Console.WriteLine("FileSaveLocation: " + fileSaveLocation);
+            //xlWorkBook.SaveAs(fileSaveLocation, Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
+            //xlWorkBook.Close(true, misValue, misValue);
+            //xlApp.Quit();
+            //return fileSaveLocation;
+
+
+            Excel.Application ExcelApp = new Excel.Application();
+
+            Excel.Workbook ExcelWorkBook = null;
+
+            Excel.Worksheet ExcelWorkSheet = null;
+
+            object misValue = System.Reflection.Missing.Value;
+
+            ExcelApp.Visible = true;
+
+            ExcelWorkBook = ExcelApp.Workbooks.Add(Excel.XlWBATemplate.xlWBATWorksheet);
+
+
+
+            List<string> SheetNames = new List<string>();
+            SheetNames.Add("FI");
+            SheetNames.Add("Account Changes");
+            SheetNames.Add("Added Accounts");
+            SheetNames.Add("Deleted Details");
+            
+
+            try
+            {
+                for (int i = 1; i < 4; i++)
+                    ExcelWorkBook.Worksheets.Add(); //Adding New sheet in Excel Workbook
+
+                DataTable tempDataTable = null;
+                for (int i = 0; i < 4; i++)
+                {
+                    switch (i)
+                    {
+                        case 0: tempDataTable = dtblTableFi;break;
+                        case 1: tempDataTable = dtblTableAccount; break;
+                        case 2: tempDataTable = dtblTableNewAccount; break;
+                        case 3: tempDataTable = dtblTableDeletedAccount; break;
+                        //default: null;
+                    }
+
+                    ExcelWorkSheet = ExcelWorkBook.Worksheets[i + 1];
+
+                    addColumnsAndRows(ref ExcelWorkSheet, ref tempDataTable);
+
+                    //Renaming the ExcelSheets
+                    ExcelWorkSheet.Name = SheetNames[i];
+                }
+
+                
+                Console.WriteLine("FileSaveLocation: " + fileSaveLocation);
+                ExcelWorkBook.SaveAs(fileSaveLocation, Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
+                ExcelWorkBook.Close(true, misValue, misValue);
+                ExcelApp.Quit();
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return fileSaveLocation;
+        }
+
+        public void addColumnsAndRows(ref Excel.Worksheet ExcelWorkSheet, ref DataTable tempDataTable)
+        {
+            // Column headings
+            for (var t = 0; t < tempDataTable.Columns.Count; t++)
+            {
+                ExcelWorkSheet.Cells[1, t + 1] = tempDataTable.Columns[t].ColumnName;
+            }
+
+            // rows
+            for (var t = 0; t < tempDataTable.Rows.Count; t++)
+            {
+                // to do: format datetime values before printing
+                for (var j = 0; j < tempDataTable.Columns.Count; j++)
+                {
+                    ExcelWorkSheet.Cells[t + 2, j + 1] = tempDataTable.Rows[t][j];
+                }
+            }
+        }
     }
 }
-
