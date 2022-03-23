@@ -1,6 +1,7 @@
 ﻿using System.Xml;
 using Newtonsoft.Json;
 using KellermanSoftware.CompareNetObjects;
+using AEOI.Editor.Web.Shared.Models;
 
 namespace AEOI.Editor.Web.Shared
 {

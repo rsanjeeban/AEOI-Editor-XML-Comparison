@@ -7,7 +7,8 @@ namespace AEOI.Editor.Web.Shared.Models
     public class XmlDifference
     {
         public List<Difference> DiffNodeList { get; set; }
-    }
+
+}
     public class Difference
     {
         [JsonProperty("Edit")]
@@ -44,13 +45,17 @@ namespace AEOI.Editor.Web.Shared.Models
 
         [JsonProperty("CompLineNo")]
         public int CompLineNo { get; set; }
+        
+        public string userName { get; set; }
+        public string dateOfFileModified { get; set; }
+        public string timeOfFileModified { get; set; }
+        public string snapShotName { get; set; }
     }
 
     public class DifferenceList
     {
-        public XmlDifference FiDifference;
-        public XmlDifference AccountDifference;
-
+        public XmlDifference FiDifference { get; set; }
+        public XmlDifference AccountDifference { get; set; }
         public DifferenceList()
         {
         }

@@ -32,13 +32,38 @@ namespace AEOI.Editor.Web.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> ExportPdf(String[] fileNames, String export)
         {
+            string userName = "Allie Grater";
+            string dateOfFileModified = "02/03/2022";
+            string timeOfFileModified = "09.32 AM";
+
+            
             List<DifferenceList> differenceList = new List<DifferenceList>();
             
             for (int i = 0; i < fileNames.Length; i++)
             {
                 if (i+1 < fileNames.Length)
                 {
-                    differenceList.Add(Compare(fileNames[i], fileNames[i + 1],"pdf"));
+                    //get the snapShot name from file name
+                    string[] splitNames = fileNames[i + 1].Split(' ', '.');
+                    string snapShotName = splitNames.Length > 2 ? splitNames[splitNames.Length - 2] : "N/A";
+
+                    // Compare the files
+                    DifferenceList difference = Compare(fileNames[i], fileNames[i + 1]);
+                    difference.FiDifference.DiffNodeList.ForEach(item =>
+                    {
+                        item.userName = userName;
+                        item.dateOfFileModified = dateOfFileModified;
+                        item.timeOfFileModified = timeOfFileModified;
+                        item.snapShotName = snapShotName;
+                    });
+                    difference.AccountDifference.DiffNodeList.ForEach(item =>
+                    { 
+                        item.userName = userName;
+                        item.dateOfFileModified = dateOfFileModified;
+                        item.timeOfFileModified = timeOfFileModified;
+                        item.snapShotName = snapShotName;
+                    });
+                    differenceList.Add(difference);
                 }
             }
 
@@ -57,12 +82,11 @@ namespace AEOI.Editor.Web.Server.Controllers
             return Ok(JsonConvert.SerializeObject(mergedDifferenceList));
         }
 
-
-        public DifferenceList Compare(String file1Name, String file2Name,String export="pdf")
+        public DifferenceList Compare(String file1Name, String file2Name)
         {
-            string userName = "Allie Grater";
-            string dateOfFileModified = "02/03/2022";
-            string timeOfFileModified = "09.32 AM";
+            //string userName = "Allie Grater";
+            //string dateOfFileModified = "02/03/2022";
+            //string timeOfFileModified = "09.32 AM";
 
             try
             {
@@ -85,9 +109,9 @@ namespace AEOI.Editor.Web.Server.Controllers
                 var file2 = (File)serializer.Deserialize(reader);
                 reader.Close();
 
-                //get the snapShot name from file name
-                string[] splitNames = file2Name.Split(' ', '.');
-                string snapShotName = splitNames.Length > 2 ? splitNames[splitNames.Length - 2] : "N/A";
+                ////get the snapShot name from file name
+                //string[] splitNames = file2Name.Split(' ', '.');
+                //string snapShotName = splitNames.Length > 2 ? splitNames[splitNames.Length - 2] : "N/A";
 
                 //// Convert the currentFile to object
                 //File currentFile = (File)serializer.Deserialize(file.OpenReadStream());
@@ -97,7 +121,7 @@ namespace AEOI.Editor.Web.Server.Controllers
                 FileAccounts currentAccounts = file2.Accounts;
                 FileAccounts previousAccounts = file1.Accounts;
 
-                string fiDifference = comparisonService.CompareFis(file2.FIs, file1.FIs);
+                //string fiDifference = comparisonService.CompareFis(file2.FIs, file1.FIs);
 
                 //############# Two XML comparison #############
                 XmlDocument currentAccountXml = SerializeToXmlDocument(file2.Accounts);
