@@ -17,3 +17,8 @@ function triggerFileDownload(fileName, url,event) {
     anchorElement.click();
     anchorElement.remove();
 }
+
+function triggerConsoleLog(data) {
+    console.log("triggered function : triggerFileDownload");
+    console.log(data);
+}

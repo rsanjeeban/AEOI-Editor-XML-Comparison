@@ -1,4 +1,5 @@
 ﻿
+using AEOI.Editor.Web.Shared;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,6 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+HttpContextExtensions.AddHttpContextAccessor(builder.Services);
+
 
 var app = builder.Build();
 
@@ -32,10 +35,9 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-
 app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
+app.UseHttpContext();
 
 app.Run();
-

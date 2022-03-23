@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using AEOI.Editor.Web.Shared.Models;
 
 namespace AEOI.Editor.Web.Server.Controllers
 {
@@ -62,5 +64,22 @@ namespace AEOI.Editor.Web.Server.Controllers
             // Return an empty string message in this case
             return new EmptyResult();
         }
+
+        [HttpGet]
+        public IEnumerable<FileDetail> GetFileNames()
+        {
+            DirectoryInfo d = new DirectoryInfo(@"/tmp/Uploads");
+            FileInfo[] Files = d.GetFiles("*.xml");
+
+            List<FileDetail> FileDetails = new List<FileDetail>();
+
+            foreach (FileInfo file in Files)
+            {
+                FileDetails.Add(new FileDetail(file.Name,file.Length));
+            }
+            return FileDetails;
+        }
     }
+
+    
 }

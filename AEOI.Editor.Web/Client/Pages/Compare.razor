@@ -1,12 +1,14 @@
 ﻿@page "/compare"
 @inject NavigationManager NavigationManager
 @using System.IO
+@using AEOI.Editor.Web.Shared.Models
 @inject IJSRuntime JS
+@inject HttpClient HttpClient
 
-<h1>Upload comparison file :</h1>
+<h3>Upload comparison file (export Pdf) :</h3>
 
 <TelerikUpload 
-    SaveUrl="@SaveUrl"
+    SaveUrl="@SavePdfUrl"
     RemoveUrl="@RemoveUrl"
     OnSuccess="@OnSuccessHandler"
     SaveField="file"
@@ -16,20 +18,67 @@
     MinFileSize="1024">
 </TelerikUpload>
 
+<br />
+
+<h3>Upload comparison file (export Excel) :</h3>
+
+<TelerikUpload 
+    SaveUrl="@SaveExcelUrl"
+    RemoveUrl="@RemoveUrl"
+    OnSuccess="@OnSuccessHandler"
+    SaveField="file"
+    RemoveField="fileToRemove"
+    AllowedExtensions="@( new List<string>() { ".xml" } )"
+    MaxFileSize="2048000"
+    MinFileSize="1024">
+</TelerikUpload>
+
+<br/>
+
+@foreach (var item in FileDetails)
+{
+    <div class="mt-sm">
+        <TelerikCheckBox @bind-Value="@item.isSelected">
+        @*ValueChanged="@((bool value) => ValueChanged(value))">*@
+        </TelerikCheckBox>
+        <label>
+            @item.fileName
+        </label>
+    </div>
+}
+<br />
+<TelerikButton OnClick="@onSubmit">PDF</TelerikButton>
+
+
 
 @code {
     // One way to define relative paths is to put the desired URL here.
     // This can be a full URL such as https://mydomain/myendpoint/save
-    public string SaveUrl => ToAbsoluteUrl("api/comparison/compare");
+    public string SavePdfUrl => ToAbsoluteUrl("api/comparison/compare?export=pdf");
+    public string SaveExcelUrl => ToAbsoluteUrl("api/comparison/compare?export=excel");
     public string RemoveUrl => ToAbsoluteUrl("api/comparison/remove");
+
+    private FileDetail[] FileDetails;
 
     public string ToAbsoluteUrl(string url)
     {
         return $"{NavigationManager.BaseUri}{url}";
     }
-    
+
     async Task OnSuccessHandler(UploadSuccessEventArgs e)
     {  
-       await JS.InvokeVoidAsync("triggerFileDownload", "Report",e.Request.ResponseText,e);
+        await JS.InvokeVoidAsync("triggerFileDownload", "Report",e.Request.ResponseText,e);
     }
+
+    protected override async Task OnInitializedAsync()
+    {
+        FileDetails = await HttpClient.GetFromJsonAsync<FileDetail[]>("api/upload/getfilenames");
+    }
+
+    async Task onSubmit()
+    {
+        var response = await HttpClient.PostAsJsonAsync("api/comparison/ExportPdf?export=excel",FileDetails.Where(item=>item.isSelected).Select(item => item.fileName));
+    }
+
+
 }

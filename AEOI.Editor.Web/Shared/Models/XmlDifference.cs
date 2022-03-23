@@ -45,4 +45,20 @@ namespace AEOI.Editor.Web.Shared.Models
         [JsonProperty("CompLineNo")]
         public int CompLineNo { get; set; }
     }
+
+    public class DifferenceList
+    {
+        public XmlDifference FiDifference;
+        public XmlDifference AccountDifference;
+
+        public DifferenceList()
+        {
+        }
+
+        public DifferenceList(XmlDifference fiDifference, XmlDifference accountDifference)
+        {
+            FiDifference = fiDifference;
+            AccountDifference = accountDifference;
+        }
+    }
 }

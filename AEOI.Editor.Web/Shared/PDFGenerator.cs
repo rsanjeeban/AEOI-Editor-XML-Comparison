@@ -6,9 +6,9 @@ using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Data;
+using System.Net;
 using System.Collections.Generic;
 using Excel = Microsoft.Office.Interop.Excel;
-using System.Reflection;
 
 namespace AEOI.Editor.Web.Shared
 {
@@ -47,6 +47,8 @@ namespace AEOI.Editor.Web.Shared
         {
             //string fileSaveLocation = "E:\\test.pdf";
             string fileSaveLocation = Path.GetFullPath(".\\pdf\\report.pdf");
+            var appBaseUrl = MyHttpContext.AppBaseUrl;
+            String fileUrl = appBaseUrl + "\\pdf\\report.pdf";
 
             MemoryStream workStream = new MemoryStream();
 
@@ -216,7 +218,7 @@ namespace AEOI.Editor.Web.Shared
 
             /* ------------------------ Add Table 3 for "New Accounts" ------------------------ */
 
-            if (dtblTableAccount.Rows.Count != 0)
+            if (dtblTableNewAccount.Rows.Count != 0)
             {
                 // Text : Account
                 Paragraph prgNewAccount = new Paragraph();
@@ -331,6 +333,19 @@ namespace AEOI.Editor.Web.Shared
 
             //return new FileStreamResult(workStream, "application/pdf");
             return fileSaveLocation;
+
+            // Create a new WebClient instance.
+            //using (WebClient myWebClient = new WebClient())
+            //{
+            //    //myStringWebResource = remoteUri + fileName;
+            //    // Download the Web resource and save it into the current filesystem folder.
+            //    myWebClient.DownloadFile(fileUrl, fileSaveLocation);
+            //    return fileUrl;
+            //}
+            //WebClient myWebClient = new WebClient();
+            //fileUrl = appBaseUrl + "/pdf/report.pdf";
+            //myWebClient.DownloadFile(fileUrl, fileSaveLocation);
+
         }
 
         DataTable MakeFiTable(List<Difference> differences)

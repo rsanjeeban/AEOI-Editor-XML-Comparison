@@ -20,5 +20,14 @@
     <ProjectReference Include="..\Client\AEOI.Editor.Web.Client.csproj" />
     <ProjectReference Include="..\Shared\AEOI.Editor.Web.Shared.csproj" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <None Update="excel\report.xls">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Update="pdf\report.pdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 
 </Project>
