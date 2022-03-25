@@ -9,7 +9,7 @@
 </TelerikUpload>
 
 <br />
-<TelerikButton OnClick="@UploadFiles">Upload File</TelerikButton>
+@*<TelerikButton OnClick="@UploadFiles">Upload File</TelerikButton>*@
 
 
 @code {
@@ -24,9 +24,9 @@
         return $"{NavigationManager.BaseUri}{url}";
     }
 
-    public void UploadFiles()
-    {
-        UploadRef.UploadFiles();
-    }
+    //public void UploadFiles()
+    //{
+    //    UploadRef.UploadFiles();
+    //}
 
 }

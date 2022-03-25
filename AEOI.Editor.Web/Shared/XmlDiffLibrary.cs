@@ -28,7 +28,7 @@ namespace AEOI.Editor.Web.Shared
             public string Description { get; set; }
             public FileAccountsAccount Account { get; set; } = null;
             public FileFIsFI Fi { get; set; } = null;
-            public FileFIsFI FI { get; set; } = null;
+            public FileControllingPersonsControllingPerson ControllingPerson { get; set; } = null;
             public string LocalName { get; set; }
             public string ValueFrom { get; set; }
             public string ValueTo { get; set; }
@@ -297,6 +297,7 @@ namespace AEOI.Editor.Web.Shared
 
                 FileAccountsAccount Account = null;
                 FileFIsFI Fi = null;
+                FileControllingPersonsControllingPerson ControllingPerson = null;
 
 
                 while (xFromQueue.Count > 0 && xToQueue.Count > 0)
@@ -331,6 +332,19 @@ namespace AEOI.Editor.Web.Shared
                             Fi = (FileFIsFI)(serializer.Deserialize(reader));
                         }
                     }
+                    // Extract the Fi data
+                    if (xFrom.LocalName == "ControllingPerson")
+                    {
+                        XmlRootAttribute xRoot = new XmlRootAttribute();
+                        xRoot.ElementName = "ControllingPerson";
+                        xRoot.IsNullable = true;
+
+                        XmlSerializer serializer = new XmlSerializer(typeof(FileControllingPersonsControllingPerson), xRoot);
+                        using (StringReader reader = new StringReader("<ControllingPerson>" + xFrom.InnerXml+ "</ControllingPerson>"))
+                        {
+                            ControllingPerson = (FileControllingPersonsControllingPerson)(serializer.Deserialize(reader));
+                        }
+                    }
 
                     do
                     {
@@ -355,11 +369,8 @@ namespace AEOI.Editor.Web.Shared
                                 tempFrom.MoveToFirstChild();
                                 tempTo.MoveToFirstChild();
 
-                                
-
-
                                 XmlDiffNode result;
-                                if (!options.IgnoreNodes.Contains(XPathNodeType.Text) && !CompareText(tempFrom, tempTo, out result, ref diffNumber, Account, Fi, localName))
+                                if (!options.IgnoreNodes.Contains(XPathNodeType.Text) && !CompareText(tempFrom, tempTo, out result, ref diffNumber, Account, Fi, ControllingPerson, localName))
                                 {
                                     diffNodeList.Add(result);
                                 }
@@ -380,6 +391,7 @@ namespace AEOI.Editor.Web.Shared
                                     ValueFrom = "",
                                     ValueTo = "",
                                     Account = Account,
+                                    Fi=Fi,
                                     DiffNodeType = XmlDiffNode.DiffNodeTypes.Tag,
                                     Origin = fromFilename,
                                     Comparison = toFilename,
@@ -414,6 +426,8 @@ namespace AEOI.Editor.Web.Shared
                                     ValueFrom = null,
                                     ValueTo = null,
                                     Account = Account,
+                                    Fi = Fi,
+                                    ControllingPerson=ControllingPerson,
                                     DiffNodeType = XmlDiffNode.DiffNodeTypes.Node,
                                     Descendants = (options.MatchDescendants) ? bestMatchNode.Item2 : null,
                                     Origin = fromFilename,
@@ -441,6 +455,8 @@ namespace AEOI.Editor.Web.Shared
                                     ValueFrom = null,
                                     ValueTo = null,
                                     Account = Account,
+                                    Fi=Fi,
+                                    ControllingPerson =ControllingPerson,
                                     DiffNodeType = XmlDiffNode.DiffNodeTypes.Tag,
                                     Origin = fromFilename,
                                     Comparison = toFilename,
@@ -463,6 +479,8 @@ namespace AEOI.Editor.Web.Shared
                                     ValueFrom = null,
                                     ValueTo = null,
                                     Account = Account,
+                                    Fi = Fi,
+                                    ControllingPerson = ControllingPerson,
                                     DiffNodeType = XmlDiffNode.DiffNodeTypes.Tag,
                                     Origin = fromFilename,
                                     Comparison = toFilename,
@@ -483,7 +501,7 @@ namespace AEOI.Editor.Web.Shared
                     fromList.Add(node);
             }
 
-            private bool CompareText(XPathNavigator xmlFromNav, XPathNavigator xmlToNav, out XmlDiffNode result, ref int diffNumber, FileAccountsAccount Account, FileFIsFI Fi,string localName)
+            private bool CompareText(XPathNavigator xmlFromNav, XPathNavigator xmlToNav, out XmlDiffNode result, ref int diffNumber, FileAccountsAccount Account, FileFIsFI Fi, FileControllingPersonsControllingPerson controllingPerson, string localName)
             {
                 XPathNavigator xFrom = xmlFromNav.Clone();
                 XPathNavigator xTo = xmlToNav.Clone();
@@ -504,6 +522,7 @@ namespace AEOI.Editor.Web.Shared
                             ValueTo = xTo.Value.Trim(),
                             Account = Account,
                             Fi = Fi,
+                            ControllingPerson = controllingPerson,
                             DiffNodeType = XmlDiffNode.DiffNodeTypes.Text,
                             Origin = fromFilename,
                             Comparison = toFilename,
@@ -799,6 +818,10 @@ namespace AEOI.Editor.Web.Shared
                 // Convert the Fi object to string
                 string fi = JsonConvert.SerializeObject(node.Fi);
                 diffLine.AppendLine("\"Fi\": " + "\"" + EscapeQuotes(fi) + "\",");
+
+                // Convert the Fi object to string
+                string controllingPerson = JsonConvert.SerializeObject(node.ControllingPerson);
+                diffLine.AppendLine("\"ControllingPerson\": " + "\"" + EscapeQuotes(controllingPerson) + "\",");
 
                 diffLine.AppendLine("\"Node Type\": " + "\"" + node.DiffNodeType + "\",");
 

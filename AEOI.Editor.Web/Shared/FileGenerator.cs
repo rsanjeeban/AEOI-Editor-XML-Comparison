@@ -14,10 +14,10 @@ namespace AEOI.Editor.Web.Shared
 {
     public class FileGenerator
     {
-        private string userName;
-        private string snapShotName;
-        private string dateOfFileModified;
-        private string timeOfFileModified;
+        //private string userName;
+        //private string snapShotName;
+        //private string dateOfFileModified;
+        //private string timeOfFileModified;
 
         private FileFIs currentFis;
         private File currentFile;
@@ -26,13 +26,16 @@ namespace AEOI.Editor.Web.Shared
         private DataTable dtblTableAccount;
         private DataTable dtblTableNewAccount;
         private DataTable dtblTableDeletedAccount;
-
-        public FileGenerator(string userName, string dateOfFileModified, string timeOfFileModified, string snapShotName, File file, FileFIs currentFis, List<Difference> accountDifferences, List<Difference> fiDifferences)
+        private DataTable dtblTableControllingPersons;
+        private DataTable dtblTableNewControllingPersons;
+        private DataTable dtblTableDeletedControllingPersons;
+        private List<SubmissionDetails> submissionDetails = new List<SubmissionDetails>();
+        public FileGenerator(File file, FileFIs currentFis, List<Difference> accountDifferences, List<Difference> fiDifferences, List<Difference> controllingPersonsDifference, List<SubmissionDetails> submissionDetails)
         {
-            this.userName = userName;
-            this.dateOfFileModified = dateOfFileModified;
-            this.timeOfFileModified = timeOfFileModified;
-            this.snapShotName = snapShotName;
+            //this.userName = userName;
+            //this.dateOfFileModified = dateOfFileModified;
+            //this.timeOfFileModified = timeOfFileModified;
+            //this.snapShotName = snapShotName;
 
             this.currentFile = file;
             this.currentFis = currentFis;
@@ -42,6 +45,10 @@ namespace AEOI.Editor.Web.Shared
             this.dtblTableAccount = MakeAccountsTable(accountDifferences);
             this.dtblTableNewAccount = MakeAccountsTable(accountDifferences, true);
             this.dtblTableDeletedAccount = MakeAccountsTable(accountDifferences, false, true);
+            this.dtblTableControllingPersons = MakeControlPersonTable(controllingPersonsDifference);
+            this.dtblTableNewControllingPersons= MakeControlPersonTable(controllingPersonsDifference, true);
+            this.dtblTableDeletedControllingPersons = MakeControlPersonTable(controllingPersonsDifference,false,true);
+            this.submissionDetails = submissionDetails;
         }
         public string GeneratePdf()
         {
@@ -101,7 +108,7 @@ namespace AEOI.Editor.Web.Shared
 
             // Define Font
             BaseFont btnFi = BaseFont.CreateFont(BaseFont.TIMES_ROMAN, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
-            Font fntTableTitle = new Font(btnFi, 9, 2, BaseColor.GRAY);
+            Font fntTableTitle = new Font(btnFi, 14, 2, BaseColor.GRAY);
             Font fntTable = new Font(bfntHead, 9, 0, BaseColor.BLACK);
             
 
@@ -320,7 +327,161 @@ namespace AEOI.Editor.Web.Shared
                 document.Add(tableNewAccount);
             }
 
+            /* ------------------------ Add Table 4 for "Reportable Controlling Persons" ------------------------ */
 
+            if (dtblTableControllingPersons.Rows.Count != 0)
+            {
+                // Text : Account
+                Paragraph prgNewControllingPerson = new Paragraph();
+                prgNewControllingPerson.Alignment = Element.ALIGN_LEFT;
+                Paragraph ParaNewControllingPersonTitle = new Paragraph("Reportable Controlling Persons", fntTableTitle);
+                ParaNewControllingPersonTitle.SpacingBefore = 10;
+                ParaNewControllingPersonTitle.SpacingAfter = 15;
+                prgNewControllingPerson.Add(ParaNewControllingPersonTitle);
+                document.Add(prgNewControllingPerson);
+
+                // Write the table
+                PdfPTable tableNewControllingPerson = new PdfPTable(dtblTableControllingPersons.Columns.Count);
+                tableNewControllingPerson.WidthPercentage = 100;
+
+                // Table header
+                BaseFont btnColumnHeader3 = BaseFont.CreateFont(BaseFont.TIMES_ROMAN, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+                Font fntColumnHeader3 = new Font(btnColumnHeader3, 10, 1, BaseColor.WHITE);
+
+                for (int i = 0; i < dtblTableControllingPersons.Columns.Count; i++)
+                {
+                    //Skip the time field due to colspan
+                    if (dtblTableControllingPersons.Columns[i].ColumnName != "Time")
+                    {
+                        PdfPCell cell = new PdfPCell(new Paragraph(dtblTableControllingPersons.Columns[i].ColumnName, fntTable));
+                        cell.BorderWidth = 1;
+                        // Colspan for date field
+                        if (dtblTableControllingPersons.Columns[i].ColumnName == "Date")
+                        {
+                            cell.Colspan = 2;
+                        }
+                        tableNewControllingPerson.AddCell(cell);
+                    }
+
+                }
+                // Table Data
+                for (int i = 0; i < dtblTableControllingPersons.Rows.Count; i++)
+                {
+                    for (int j = 0; j < dtblTableControllingPersons.Columns.Count; j++)
+                    {
+                        //tableAccount.AddCell(dtblTableControllingPersons.Rows[i][j].ToString());
+                        PdfPCell cell = new PdfPCell(new Paragraph(dtblTableControllingPersons.Rows[i][j].ToString(), fntTable));
+                        cell.BorderWidth = 1;
+                        tableNewControllingPerson.AddCell(cell);
+                    }
+                }
+
+                document.Add(tableNewControllingPerson);
+            }
+
+            /* ------------------------ Add Table 5 for "Added Controlling Persons" ------------------------ */
+
+            if (dtblTableNewControllingPersons.Rows.Count != 0)
+            {
+                // Text : Account
+                Paragraph prgNewControllingPerson = new Paragraph();
+                prgNewControllingPerson.Alignment = Element.ALIGN_LEFT;
+                Paragraph ParaNewControllingPersonTitle = new Paragraph("Added Controlling Persons", fntTableTitle);
+                ParaNewControllingPersonTitle.SpacingBefore = 10;
+                ParaNewControllingPersonTitle.SpacingAfter = 15;
+                prgNewControllingPerson.Add(ParaNewControllingPersonTitle);
+                document.Add(prgNewControllingPerson);
+
+                // Write the table
+                PdfPTable tableNewControllingPerson = new PdfPTable(dtblTableNewControllingPersons.Columns.Count);
+                tableNewControllingPerson.WidthPercentage = 100;
+
+                // Table header
+                BaseFont btnColumnHeader3 = BaseFont.CreateFont(BaseFont.TIMES_ROMAN, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+                Font fntColumnHeader3 = new Font(btnColumnHeader3, 10, 1, BaseColor.WHITE);
+
+                for (int i = 0; i < dtblTableNewControllingPersons.Columns.Count; i++)
+                {
+                    //Skip the time field due to colspan
+                    if (dtblTableNewControllingPersons.Columns[i].ColumnName != "Time")
+                    {
+                        PdfPCell cell = new PdfPCell(new Paragraph(dtblTableNewControllingPersons.Columns[i].ColumnName, fntTable));
+                        cell.BorderWidth = 1;
+                        // Colspan for date field
+                        if (dtblTableNewControllingPersons.Columns[i].ColumnName == "Date")
+                        {
+                            cell.Colspan = 2;
+                        }
+                        tableNewControllingPerson.AddCell(cell);
+                    }
+
+                }
+                // Table Data
+                for (int i = 0; i < dtblTableNewControllingPersons.Rows.Count; i++)
+                {
+                    for (int j = 0; j < dtblTableNewControllingPersons.Columns.Count; j++)
+                    {
+                        //tableAccount.AddCell(dtblTableNewControllingPersons.Rows[i][j].ToString());
+                        PdfPCell cell = new PdfPCell(new Paragraph(dtblTableNewControllingPersons.Rows[i][j].ToString(), fntTable));
+                        cell.BorderWidth = 1;
+                        tableNewControllingPerson.AddCell(cell);
+                    }
+                }
+
+                document.Add(tableNewControllingPerson);
+            }
+
+            /* ------------------------ Add Table 5 for "Deleted Controlling Persons" ------------------------ */
+
+            if (dtblTableDeletedControllingPersons.Rows.Count != 0)
+            {
+                // Text : Account
+                Paragraph prgNewControllingPerson = new Paragraph();
+                prgNewControllingPerson.Alignment = Element.ALIGN_LEFT;
+                Paragraph ParaNewControllingPersonTitle = new Paragraph("Deleted Controlling Persons", fntTableTitle);
+                ParaNewControllingPersonTitle.SpacingBefore = 10;
+                ParaNewControllingPersonTitle.SpacingAfter = 15;
+                prgNewControllingPerson.Add(ParaNewControllingPersonTitle);
+                document.Add(prgNewControllingPerson);
+
+                // Write the table
+                PdfPTable tableNewControllingPerson = new PdfPTable(dtblTableDeletedControllingPersons.Columns.Count);
+                tableNewControllingPerson.WidthPercentage = 100;
+
+                // Table header
+                BaseFont btnColumnHeader3 = BaseFont.CreateFont(BaseFont.TIMES_ROMAN, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+                Font fntColumnHeader3 = new Font(btnColumnHeader3, 10, 1, BaseColor.WHITE);
+
+                for (int i = 0; i < dtblTableDeletedControllingPersons.Columns.Count; i++)
+                {
+                    //Skip the time field due to colspan
+                    if (dtblTableDeletedControllingPersons.Columns[i].ColumnName != "Time")
+                    {
+                        PdfPCell cell = new PdfPCell(new Paragraph(dtblTableDeletedControllingPersons.Columns[i].ColumnName, fntTable));
+                        cell.BorderWidth = 1;
+                        // Colspan for date field
+                        if (dtblTableDeletedControllingPersons.Columns[i].ColumnName == "Date")
+                        {
+                            cell.Colspan = 2;
+                        }
+                        tableNewControllingPerson.AddCell(cell);
+                    }
+
+                }
+                // Table Data
+                for (int i = 0; i < dtblTableDeletedControllingPersons.Rows.Count; i++)
+                {
+                    for (int j = 0; j < dtblTableDeletedControllingPersons.Columns.Count; j++)
+                    {
+                        //tableAccount.AddCell(dtblTableDeletedControllingPersons.Rows[i][j].ToString());
+                        PdfPCell cell = new PdfPCell(new Paragraph(dtblTableDeletedControllingPersons.Rows[i][j].ToString(), fntTable));
+                        cell.BorderWidth = 1;
+                        tableNewControllingPerson.AddCell(cell);
+                    }
+                }
+
+                document.Add(tableNewControllingPerson);
+            }
 
             document.Close();
 
@@ -376,7 +537,7 @@ namespace AEOI.Editor.Web.Shared
                 if (Fi != null)
                 {
                     autoIncrement++;
-                    differentTable.Rows.Add(autoIncrement, dateOfFileModified, timeOfFileModified, userName, Fi.FIID.Value, Fi.Name.Value, CheckEvent(item.ValueFrom, item.ValueTo), item.LocalName, item.ValueFrom, item.ValueTo, snapShotName);
+                    differentTable.Rows.Add(autoIncrement, item.dateOfFileModified, item.timeOfFileModified, item.userName, Fi.FIID.Value, Fi.Name.Value, CheckEvent(item.ValueFrom, item.ValueTo), item.LocalName, item.ValueFrom, item.ValueTo, item.snapShotName);
                 }
             });
 
@@ -417,21 +578,91 @@ namespace AEOI.Editor.Web.Shared
                 if (item.Edit == "Delete" && onlyDeleted)
                 {
                     autoIncrement++;
-                    fiTable.Rows.Add(autoIncrement, dateOfFileModified, timeOfFileModified, userName, Account.FIID.Value, FindFiName(Account.FIID.Value), Account.AccountNumber.Value, Account.PersonType.Value, item.Edit, snapShotName);
+                    fiTable.Rows.Add(autoIncrement, item.dateOfFileModified, item.timeOfFileModified, item.userName, Account.FIID.Value, FindFiName(Account.FIID.Value), Account.AccountNumber.Value, Account.PersonType.Value, item.Edit, item.snapShotName);
                 }
                 else if (item.Edit == "Edit" && !onlyNew && !onlyDeleted)
                 {
                     autoIncrement++;
-                    fiTable.Rows.Add(autoIncrement, dateOfFileModified, timeOfFileModified, userName, Account.FIID.Value, FindFiName(Account.FIID.Value), Account.AccountNumber.Value, Account.PersonType.Value, item.Edit, item.LocalName, item.ValueTo, item.ValueFrom, snapShotName);
+                    fiTable.Rows.Add(autoIncrement, item.dateOfFileModified, item.timeOfFileModified, item.userName, Account.FIID.Value, FindFiName(Account.FIID.Value), Account.AccountNumber.Value, Account.PersonType.Value, item.Edit, item.LocalName, item.ValueTo, item.ValueFrom, item.snapShotName);
                 }
                 else if (item.Edit == "Insert" && onlyNew)
                 {
                     autoIncrement++;
-                    fiTable.Rows.Add(autoIncrement, dateOfFileModified, timeOfFileModified, userName, Account.FIID.Value, FindFiName(Account.FIID.Value), Account.AccountNumber.Value, Account.PersonType.Value, item.Edit, snapShotName);
+                    fiTable.Rows.Add(autoIncrement, item.dateOfFileModified, item.timeOfFileModified, item.userName, Account.FIID.Value, FindFiName(Account.FIID.Value), Account.AccountNumber.Value, Account.PersonType.Value, item.Edit, item.snapShotName);
                 }
             });
 
             return fiTable;
+        }
+
+        DataTable MakeControlPersonTable(List<Difference> differences, bool onlyNew = false, bool onlyDeleted = false)
+        {
+            //Create control person table object
+            DataTable differentTable = new DataTable();
+
+            //Define columns
+            differentTable.Columns.Add("Item");
+            differentTable.Columns.Add("FI Reference");
+            differentTable.Columns.Add("FI Name");
+            differentTable.Columns.Add("Account Number");
+            differentTable.Columns.Add("Name of account holder");
+            differentTable.Columns.Add("Name of controlling person");
+            if (onlyNew)
+            {
+                differentTable.Columns.Add("Relationship type");
+                differentTable.Columns.Add("Field 3");
+                differentTable.Columns.Add("Field 4");
+            }
+            else
+            {
+                if (!onlyDeleted) {
+                    differentTable.Columns.Add("Tab");
+                }
+                differentTable.Columns.Add("Event");
+                if (!onlyDeleted)
+                {
+                    differentTable.Columns.Add("Field Name");
+                    differentTable.Columns.Add("Previous Value");
+                    differentTable.Columns.Add("New Value");
+                }
+            }
+
+            differentTable.Columns.Add("Snapshot version");
+            differentTable.Columns.Add("Status");
+            differentTable.Columns.Add("Date");
+            differentTable.Columns.Add("Time");
+            differentTable.Columns.Add("Username");
+
+            //Populate with data
+            int autoIncrement = 0;
+
+            differences.ForEach(item =>
+            {
+                // Convert the account object to string
+                FileControllingPersonsControllingPerson cp = JsonConvert.DeserializeObject<FileControllingPersonsControllingPerson>(item.ControllingPerson);
+                if (cp != null)
+                {
+                    autoIncrement++;
+                    if (onlyNew && item.Edit == "Insert")
+                    {
+                        differentTable.Rows.Add(autoIncrement, cp.FIID.Value, "Fi name", cp.AccountNumber.Value, "name of the account holder", "name of controlling person",cp.RelationshipType.Value, "Field 3", "Field 4", item.snapShotName,"Status", item.dateOfFileModified, item.timeOfFileModified, item.userName);
+                    }else if (onlyDeleted && item.Edit == "Delete")
+                    {
+                        differentTable.Rows.Add(autoIncrement, cp.FIID.Value, "Fi name", cp.AccountNumber.Value, "name of the account holder", "name of controlling person", CheckEvent(item.ValueFrom, item.ValueTo), item.snapShotName, "Status", item.dateOfFileModified, item.timeOfFileModified, item.userName);
+                    }
+                    else if(item.Edit == "Edit")
+                    {
+                        try{
+                            differentTable.Rows.Add(autoIncrement, cp.FIID.Value, "Fi name", cp.AccountNumber.Value, "name of the account holder", "con", "Tab", CheckEvent(item.ValueFrom, item.ValueTo), item.LocalName, item.ValueFrom, item.ValueTo, item.snapShotName, "Status", item.dateOfFileModified, item.timeOfFileModified, item.userName);
+                        }catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.ToString());
+                        }
+                    }
+                }
+            });
+
+            return differentTable;
         }
 
         private string FindFiName(string FIID)
@@ -560,15 +791,18 @@ namespace AEOI.Editor.Web.Shared
             SheetNames.Add("Account Changes");
             SheetNames.Add("Added Accounts");
             SheetNames.Add("Deleted Details");
+            SheetNames.Add("Reportable Controlling Persons");
+            SheetNames.Add("Added Controlling Persons");
+            SheetNames.Add("Deleted Controlling Persons");
             
 
             try
             {
-                for (int i = 1; i < 4; i++)
+                for (int i = 1; i < 7; i++)
                     ExcelWorkBook.Worksheets.Add(); //Adding New sheet in Excel Workbook
 
                 DataTable tempDataTable = null;
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < 7; i++)
                 {
                     switch (i)
                     {
@@ -576,6 +810,9 @@ namespace AEOI.Editor.Web.Shared
                         case 1: tempDataTable = dtblTableAccount; break;
                         case 2: tempDataTable = dtblTableNewAccount; break;
                         case 3: tempDataTable = dtblTableDeletedAccount; break;
+                        case 4: tempDataTable = dtblTableControllingPersons; break;
+                        case 5: tempDataTable = dtblTableNewControllingPersons; break;
+                        case 6: tempDataTable = dtblTableDeletedControllingPersons; break;
                         //default: null;
                     }
 

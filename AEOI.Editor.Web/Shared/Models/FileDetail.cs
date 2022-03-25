@@ -19,4 +19,22 @@ namespace AEOI.Editor.Web.Shared.Models
             isSelected = false;
         }
     }
+
+    public class SubmissionDetails
+    {
+        public String WorkflowName { get; set;}
+        public String SendingCountry{ get; set;}
+        public String ReportType{ get; set; }
+        public String ReportStart { get; set; }
+        public String ReportEnd { get; set; }
+
+        public SubmissionDetails(File file)
+        {
+            WorkflowName = file.fileName;
+            SendingCountry = file.Submissions.Submission.TransmittingCountry.Value;
+            ReportType = file.Submissions.Submission.ReportType.Value;
+            ReportStart = file.Submissions.Submission.ReportStart.ToString();
+            ReportEnd = file.Submissions.Submission.ReportEnd.Value.ToString();
+        }
+    }
 }

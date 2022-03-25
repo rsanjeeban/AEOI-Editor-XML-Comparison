@@ -36,6 +36,9 @@ namespace AEOI.Editor.Web.Shared.Models
         public string Account { get; set; }
         [JsonProperty("Fi")]
         public string Fi { get; set; }
+        
+        [JsonProperty("ControllingPerson")]
+        public string ControllingPerson { get; set; }
 
         [JsonProperty("NodeType")]
         public string NodeType { get; set; }
@@ -56,14 +59,16 @@ namespace AEOI.Editor.Web.Shared.Models
     {
         public XmlDifference FiDifference { get; set; }
         public XmlDifference AccountDifference { get; set; }
+        public XmlDifference ControllingPersonsDifference { get; set; }
         public DifferenceList()
         {
         }
 
-        public DifferenceList(XmlDifference fiDifference, XmlDifference accountDifference)
+        public DifferenceList(XmlDifference fiDifference, XmlDifference accountDifference, XmlDifference controllingPersonsDifference)
         {
             FiDifference = fiDifference;
             AccountDifference = accountDifference;
+            ControllingPersonsDifference = controllingPersonsDifference;
         }
     }
 }

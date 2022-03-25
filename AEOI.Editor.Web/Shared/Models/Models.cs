@@ -729,7 +729,6 @@ public partial class FileSubmissionsSubmissionOriginalSubmissionRef
 [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
 public partial class FileFIs
 {
-
     private FileFIsFI[] fiField;
 
     private string worksheetField;

@@ -47,7 +47,8 @@
     </div>
 }
 <br />
-<TelerikButton OnClick="@onSubmit">PDF</TelerikButton>
+<TelerikButton OnClick="@onExportPdf">PDF</TelerikButton>
+<TelerikButton OnClick="@onExportExcel">Excel</TelerikButton>
 
 
 
@@ -67,7 +68,12 @@
 
     async Task OnSuccessHandler(UploadSuccessEventArgs e)
     {  
-        await JS.InvokeVoidAsync("triggerFileDownload", "Report",e.Request.ResponseText,e);
+        //await JS.InvokeVoidAsync("triggerFileDownload", "Report",e.Request.ResponseText);
+    }
+
+     async Task downloadFile(String url)
+    {  
+        await JS.InvokeVoidAsync("triggerFileDownload", "Report",url);
     }
 
     protected override async Task OnInitializedAsync()
@@ -75,10 +81,17 @@
         FileDetails = await HttpClient.GetFromJsonAsync<FileDetail[]>("api/upload/getfilenames");
     }
 
-    async Task onSubmit()
+    async Task onExportPdf()
     {
-        var response = await HttpClient.PostAsJsonAsync("api/comparison/ExportPdf?export=excel",FileDetails.Where(item=>item.isSelected).Select(item => item.fileName));
+        var response = await HttpClient.PostAsJsonAsync("api/comparison/ExportFile?export=pdf",FileDetails.Where(item=>item.isSelected).Select(item => item.fileName));
+        var content = await response.Content.ReadAsStringAsync();
+        await downloadFile(content );
     }
-
+    async Task onExportExcel()
+    {
+        var response = await HttpClient.PostAsJsonAsync("api/comparison/ExportFile?export=excel",FileDetails.Where(item=>item.isSelected).Select(item => item.fileName));
+        var content = await response.Content.ReadAsStringAsync();
+        await downloadFile(content);
+    }
 
 }
