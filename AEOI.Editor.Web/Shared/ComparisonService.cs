@@ -7,49 +7,12 @@ namespace AEOI.Editor.Web.Shared
 {
     public class ComparisonService
     {
-       
-        // Compare Two Objects
-        public string CompareObjects(File previousDocument, File currentDocument)
+        private XmlDiffLibrary xmlDiffLibrary;
+
+        public ComparisonService()
         {
-            // Used package for object comparison : KellermanSoftware.CompareNetObjects
-            CompareLogic compareLogic = new CompareLogic();
-            compareLogic.Config.MaxDifferences = 100;
-            ComparisonResult result = compareLogic.Compare(previousDocument, currentDocument);
-
-            //Convert the differences list to json string
-            var json = JsonConvert.SerializeObject(result.Differences);
-
-            return json;
+            xmlDiffLibrary = new XmlDiffLibrary();
         }
-
-        public string CompareAccounts(FileAccounts previousDocument, FileAccounts currentDocument)
-        {
-            // Used package for object comparison : KellermanSoftware.CompareNetObjects
-            CompareLogic compareLogic = new CompareLogic();
-            compareLogic.Config.MaxDifferences = 100;
-            ComparisonResult result = compareLogic.Compare(previousDocument, currentDocument);
-
-            //Convert the differences list to json string
-            var json = JsonConvert.SerializeObject(result.Differences);
-
-            return json;
-        }
-        public string CompareFis(FileFIs previousDocument, FileFIs currentDocument)
-        {
-            // Used package for object comparison : KellermanSoftware.CompareNetObjects
-            CompareLogic compareLogic = new CompareLogic();
-            compareLogic.Config.MaxDifferences = 100;
-            ComparisonResult result = compareLogic.Compare(previousDocument, currentDocument);
-
-            //Convert the differences list to json string
-            var json = JsonConvert.SerializeObject(result.Differences);
-
-            return json;
-        }
-
-
-
-        private XmlDiffLibrary xmlDiffLibrary = new XmlDiffLibrary();
 
         //Compare two XML Documents
         public string CompareXml(XmlDocument previousXml, XmlDocument currentXml)

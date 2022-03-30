@@ -5,33 +5,6 @@
 @inject IJSRuntime JS
 @inject HttpClient HttpClient
 
-<h3>Upload comparison file (export Pdf) :</h3>
-
-<TelerikUpload 
-    SaveUrl="@SavePdfUrl"
-    RemoveUrl="@RemoveUrl"
-    OnSuccess="@OnSuccessHandler"
-    SaveField="file"
-    RemoveField="fileToRemove"
-    AllowedExtensions="@( new List<string>() { ".xml" } )"
-    MaxFileSize="2048000"
-    MinFileSize="1024">
-</TelerikUpload>
-
-<br />
-
-<h3>Upload comparison file (export Excel) :</h3>
-
-<TelerikUpload 
-    SaveUrl="@SaveExcelUrl"
-    RemoveUrl="@RemoveUrl"
-    OnSuccess="@OnSuccessHandler"
-    SaveField="file"
-    RemoveField="fileToRemove"
-    AllowedExtensions="@( new List<string>() { ".xml" } )"
-    MaxFileSize="2048000"
-    MinFileSize="1024">
-</TelerikUpload>
 
 <br/>
 
