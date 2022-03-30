@@ -120,7 +120,7 @@ namespace AEOI.Editor.Web.Shared
                 Paragraph prgFi = new Paragraph();
                 
                 prgFi.Alignment = Element.ALIGN_LEFT;
-                prgFi.Add(new Chunk("FI", fntTableTitle));
+                prgFi.Add(new Chunk("Financial Institution", fntTableTitle));
                 document.Add(prgFi);
 
                 // Add line break
@@ -132,7 +132,7 @@ namespace AEOI.Editor.Web.Shared
                 // float[] tableFiColumnWidths = new float[] { 2f, 6f, 6f, 10f, 10f, 10f, 10f, 10f, 10f, 10f };
                 // tableFi.SetTotalWidth(tableFiColumnWidths);
 
-                tableFi.WidthPercentage = 90;
+                tableFi.WidthPercentage = 100;
                 tableFi.HorizontalAlignment = Element.ALIGN_LEFT;
                
                 //Table header
@@ -177,7 +177,7 @@ namespace AEOI.Editor.Web.Shared
                 //Text : Account
                 Paragraph prgAccount = new Paragraph();
                 prgAccount.Alignment = Element.ALIGN_LEFT;
-                Paragraph ParaAccountTitle = new Paragraph("Account", fntTableTitle);
+                Paragraph ParaAccountTitle = new Paragraph("Reportable Account", fntTableTitle);
                 ParaAccountTitle.SpacingBefore = 10;
                 ParaAccountTitle.SpacingAfter = 15;
                 prgAccount.Add(ParaAccountTitle);
@@ -223,14 +223,14 @@ namespace AEOI.Editor.Web.Shared
             }
 
 
-            /* ------------------------ Add Table 3 for "New Accounts" ------------------------ */
+            /* ------------------------ Add Table 3 for "Added Accounts" ------------------------ */
 
             if (dtblTableNewAccount.Rows.Count != 0)
             {
                 // Text : Account
                 Paragraph prgNewAccount = new Paragraph();
                 prgNewAccount.Alignment = Element.ALIGN_LEFT;
-                Paragraph ParaNewAccountTitle = new Paragraph("New Accounts", fntTableTitle);
+                Paragraph ParaNewAccountTitle = new Paragraph("Added Accounts", fntTableTitle);
                 ParaNewAccountTitle.SpacingBefore = 10;
                 ParaNewAccountTitle.SpacingAfter = 15;
                 prgNewAccount.Add(ParaNewAccountTitle);
@@ -516,9 +516,6 @@ namespace AEOI.Editor.Web.Shared
 
             //Define columns
             differentTable.Columns.Add("Item");
-            differentTable.Columns.Add("Date");
-            differentTable.Columns.Add("Time");
-            differentTable.Columns.Add("Username ");
             differentTable.Columns.Add("FI Reference");
             differentTable.Columns.Add("FI Name");
             differentTable.Columns.Add("Event");
@@ -526,6 +523,10 @@ namespace AEOI.Editor.Web.Shared
             differentTable.Columns.Add("Previous Value");
             differentTable.Columns.Add("New Value");
             differentTable.Columns.Add("Snapshot version");
+            differentTable.Columns.Add("Status");
+            differentTable.Columns.Add("Date");
+            differentTable.Columns.Add("Time");
+            differentTable.Columns.Add("Username ");
 
             //Populate with data
             int autoIncrement = 0;
@@ -537,7 +538,7 @@ namespace AEOI.Editor.Web.Shared
                 if (Fi != null)
                 {
                     autoIncrement++;
-                    differentTable.Rows.Add(autoIncrement, item.dateOfFileModified, item.timeOfFileModified, item.userName, Fi.FIID.Value, Fi.Name.Value, CheckEvent(item.ValueFrom, item.ValueTo), item.LocalName, item.ValueFrom, item.ValueTo, item.snapShotName);
+                    differentTable.Rows.Add(autoIncrement, Fi.FIID.Value, Fi.Name.Value, CheckEvent(item.ValueFrom, item.ValueTo), item.LocalName, item.ValueFrom, item.ValueTo,  item.snapShotName, "Status", item.dateOfFileModified, item.timeOfFileModified, item.userName);
                 }
             });
 
@@ -547,26 +548,53 @@ namespace AEOI.Editor.Web.Shared
         DataTable MakeAccountsTable(List<Difference> differences, bool onlyNew = false, bool onlyDeleted = false)
         {
             //Create account table object
-            DataTable fiTable = new DataTable();
+            DataTable accountTable = new DataTable();
 
             //Define columns
-            fiTable.Columns.Add("Item");
-            fiTable.Columns.Add("Date");
-            fiTable.Columns.Add("Time");
-            fiTable.Columns.Add("Username ");
-            fiTable.Columns.Add("FI Reference");
-            fiTable.Columns.Add("FI Name");
-            fiTable.Columns.Add("Account Number");
-            fiTable.Columns.Add("Name of account holder /Controlling person");
-            fiTable.Columns.Add("Event");
+            accountTable.Columns.Add("Item");
+
+            accountTable.Columns.Add("FI Reference");
+            accountTable.Columns.Add("FI Name");
+            accountTable.Columns.Add("Account Number");
+            if (onlyNew)
+            {
+                accountTable.Columns.Add("Account Type");
+                accountTable.Columns.Add("Number Type");
+            }
+            accountTable.Columns.Add("Name of account holder");
+            //Added fields
 
             if (!onlyNew && !onlyDeleted)
             {
-                fiTable.Columns.Add("Field Name");
-                fiTable.Columns.Add("Previous Value");
-                fiTable.Columns.Add("New Value");
+                accountTable.Columns.Add("Tab");
             }
-            fiTable.Columns.Add("Snapshot version");
+            if (onlyNew)
+            {
+                accountTable.Columns.Add("Currency");
+                accountTable.Columns.Add("FX rate");
+                accountTable.Columns.Add("Balance");
+                accountTable.Columns.Add("Is Undocumented");
+                accountTable.Columns.Add("Recalcitrant");  
+            }
+
+            if (!onlyNew)
+            {
+                accountTable.Columns.Add("Event");
+            }
+
+            if (!onlyNew && !onlyDeleted)
+            {
+                accountTable.Columns.Add("Field Name");
+                accountTable.Columns.Add("Previous Value");
+                accountTable.Columns.Add("New Value");
+            }
+
+            accountTable.Columns.Add("Snapshot version");
+            
+            accountTable.Columns.Add("Status");
+            accountTable.Columns.Add("Date");
+            accountTable.Columns.Add("Time");
+            accountTable.Columns.Add("Username");
 
             //Populate with data
             int autoIncrement = 0;
@@ -578,21 +606,31 @@ namespace AEOI.Editor.Web.Shared
                 if (item.Edit == "Delete" && onlyDeleted)
                 {
                     autoIncrement++;
-                    fiTable.Rows.Add(autoIncrement, item.dateOfFileModified, item.timeOfFileModified, item.userName, Account.FIID.Value, FindFiName(Account.FIID.Value), Account.AccountNumber.Value, Account.PersonType.Value, item.Edit, item.snapShotName);
+                    accountTable.Rows.Add(autoIncrement, Account.FIID.Value, FindFiName(Account.FIID.Value), Account.AccountNumber.Value, Account.PersonType.Value, item.snapShotName, Account.AccountStatus.Value, item.dateOfFileModified, item.timeOfFileModified, item.userName,   item.Edit);
                 }
                 else if (item.Edit == "Edit" && !onlyNew && !onlyDeleted)
                 {
                     autoIncrement++;
-                    fiTable.Rows.Add(autoIncrement, item.dateOfFileModified, item.timeOfFileModified, item.userName, Account.FIID.Value, FindFiName(Account.FIID.Value), Account.AccountNumber.Value, Account.PersonType.Value, item.Edit, item.LocalName, item.ValueTo, item.ValueFrom, item.snapShotName);
+                    accountTable.Rows.Add(autoIncrement, Account.FIID.Value, FindFiName(Account.FIID.Value), Account.AccountNumber.Value, Account.PersonType.Value, item.snapShotName, Account.AccountStatus.Value, item.dateOfFileModified, item.timeOfFileModified, item.userName,  item.Edit, item.LocalName, item.ValueTo, item.ValueFrom);
                 }
                 else if (item.Edit == "Insert" && onlyNew)
                 {
                     autoIncrement++;
-                    fiTable.Rows.Add(autoIncrement, item.dateOfFileModified, item.timeOfFileModified, item.userName, Account.FIID.Value, FindFiName(Account.FIID.Value), Account.AccountNumber.Value, Account.PersonType.Value, item.Edit, item.snapShotName);
+                    String nameOfAccountHolder=null;
+                    if (Account.PersonType.Value=="Individual")
+                    {
+                        nameOfAccountHolder = $"{Account.FirstName.Value} {Account.MiddleName.Value} {Account.LastName.Value}";
+                    }
+                    else if(Account.PersonType.Value == "Company")
+                    {
+                        nameOfAccountHolder = $"{Account.Name}";
+                    }
+                    
+                    accountTable.Rows.Add(autoIncrement, Account.FIID.Value, FindFiName(Account.FIID.Value), Account.AccountNumber.Value,  Account.AccountType.Value, Account.AccountNumberType.Value, nameOfAccountHolder, Account.INCountryCode.Value, Account.FXRate.column, Account.AccountBalance.Value, Account.IsUndocumented.column, "--REC", item.snapShotName, Account.AccountStatus.Value, item.dateOfFileModified, item.timeOfFileModified, item.userName);
                 }
             });
 
-            return fiTable;
+            return accountTable;
         }
 
         DataTable MakeControlPersonTable(List<Difference> differences, bool onlyNew = false, bool onlyDeleted = false)
@@ -607,17 +645,42 @@ namespace AEOI.Editor.Web.Shared
             differentTable.Columns.Add("Account Number");
             differentTable.Columns.Add("Name of account holder");
             differentTable.Columns.Add("Name of controlling person");
+            
             if (onlyNew)
             {
                 differentTable.Columns.Add("Relationship type");
-                differentTable.Columns.Add("Field 3");
-                differentTable.Columns.Add("Field 4");
+
+                differentTable.Columns.Add("Type of person");
+                differentTable.Columns.Add("Organization name");
+
+                differentTable.Columns.Add("Reference");
+                differentTable.Columns.Add("Title");
+                differentTable.Columns.Add("first name");
+                differentTable.Columns.Add("Middle name");
+                differentTable.Columns.Add("Last name ");
+                differentTable.Columns.Add("Initials");
+                differentTable.Columns.Add("DoB");
+                differentTable.Columns.Add("CIty");
+                differentTable.Columns.Add("Country");
+                differentTable.Columns.Add("Former country name");
+
+                differentTable.Columns.Add("Suite");
+                differentTable.Columns.Add("Number");
+                differentTable.Columns.Add("Street");
+                differentTable.Columns.Add("District");
+                differentTable.Columns.Add("City_");
+                differentTable.Columns.Add("Post Code");
+                differentTable.Columns.Add("Free Format Address");
+                differentTable.Columns.Add("Country_");
+
+                differentTable.Columns.Add("Tax residency (multiple)");
+                differentTable.Columns.Add("Number_");
+                differentTable.Columns.Add("Number type");
+                differentTable.Columns.Add("Country__");
             }
             else
             {
-                if (!onlyDeleted) {
-                    differentTable.Columns.Add("Tab");
-                }
+            
                 differentTable.Columns.Add("Event");
                 if (!onlyDeleted)
                 {
@@ -643,17 +706,29 @@ namespace AEOI.Editor.Web.Shared
                 if (cp != null)
                 {
                     autoIncrement++;
+                    String nameOfAccountHolder = null;
+                    if (cp.PersonType == "Individual")
+                    {
+                        nameOfAccountHolder = $"{cp.FirstName.Value} {cp.MiddleName.Value} {cp.LastName.Value}";
+                    }
+                    //else if (cp.PersonType == "Company")
+                    //{
+                    //    nameOfAccountHolder = $"{cp.Name}";
+                    //}
+
                     if (onlyNew && item.Edit == "Insert")
                     {
-                        differentTable.Rows.Add(autoIncrement, cp.FIID.Value, "Fi name", cp.AccountNumber.Value, "name of the account holder", "name of controlling person",cp.RelationshipType.Value, "Field 3", "Field 4", item.snapShotName,"Status", item.dateOfFileModified, item.timeOfFileModified, item.userName);
-                    }else if (onlyDeleted && item.Edit == "Delete")
+                        //differentTable.Rows.Add(autoIncrement, cp.FIID.Value, "Fi name", cp.AccountNumber.Value, nameOfAccountHolder, "--nameOfContPer",cp.RelationshipType.Value,cp.PersonType, "--OrgName","---Ref",cp.Title.Value,cp.FirstName.Value,cp.MiddleName.Value,cp.LastName.Value,"--Init",cp.BirthDate.Value,cp.City.Value, cp.BirthCountryCode.Value, cp.FormerCountryName.Value, item.snapShotName,"Status", item.dateOfFileModified, item.timeOfFileModified, item.userName);
+                        differentTable.Rows.Add(autoIncrement, cp.FIID.Value, "Fi name", cp.AccountNumber.Value, nameOfAccountHolder, "--nameOfContPer", cp.RelationshipType.Value, cp.PersonType, "--OrgName", "---Ref", cp.Title.Value, cp.FirstName.Value, cp.MiddleName.Value, cp.LastName.Value, "--Init", cp.BirthDate.Value, cp.City.Value, cp.BirthCountryCode.Value, cp.FormerCountryName.Value, item.snapShotName, "Status", item.dateOfFileModified, item.timeOfFileModified, item.userName);
+                    }
+                    else if (onlyDeleted && item.Edit == "Delete")
                     {
-                        differentTable.Rows.Add(autoIncrement, cp.FIID.Value, "Fi name", cp.AccountNumber.Value, "name of the account holder", "name of controlling person", CheckEvent(item.ValueFrom, item.ValueTo), item.snapShotName, "Status", item.dateOfFileModified, item.timeOfFileModified, item.userName);
+                        differentTable.Rows.Add(autoIncrement, cp.FIID.Value, "Fi name", cp.AccountNumber.Value, nameOfAccountHolder, "--nameOfContPer", CheckEvent(item.ValueFrom, item.ValueTo), item.snapShotName, "Status", item.dateOfFileModified, item.timeOfFileModified, item.userName);
                     }
                     else if(item.Edit == "Edit")
                     {
                         try{
-                            differentTable.Rows.Add(autoIncrement, cp.FIID.Value, "Fi name", cp.AccountNumber.Value, "name of the account holder", "con", "Tab", CheckEvent(item.ValueFrom, item.ValueTo), item.LocalName, item.ValueFrom, item.ValueTo, item.snapShotName, "Status", item.dateOfFileModified, item.timeOfFileModified, item.userName);
+                            differentTable.Rows.Add(autoIncrement, cp.FIID.Value, "Fi name", cp.AccountNumber.Value, nameOfAccountHolder, "con", CheckEvent(item.ValueFrom, item.ValueTo), item.LocalName, item.ValueFrom, item.ValueTo, item.snapShotName, "Status", item.dateOfFileModified, item.timeOfFileModified, item.userName);
                         }catch (Exception ex)
                         {
                             Console.WriteLine(ex.ToString());

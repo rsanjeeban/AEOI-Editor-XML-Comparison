@@ -91,7 +91,6 @@ namespace AEOI.Editor.Web.Server.Controllers
                         item.timeOfFileModified = timeOfFileModified;
                         item.snapShotName = snapShotName;
                     });
-                    differenceList.Add(difference);
                     difference.ControllingPersonsDifference.DiffNodeList.ForEach(item =>
                     {
                         item.userName = userName;
