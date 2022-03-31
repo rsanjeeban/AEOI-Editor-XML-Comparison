@@ -30,6 +30,10 @@ namespace AEOI.Editor.Web.Shared
         private DataTable dtblTableNewControllingPersons;
         private DataTable dtblTableDeletedControllingPersons;
         private List<SubmissionDetails> submissionDetails = new List<SubmissionDetails>();
+
+        private string suffixAccountDetail = " (Account Details)";
+        private string suffixPaymentDetail = " (Payment Details)";
+        private string suffixAccountHolderDetail = " (Payment Details)";
         public FileGenerator(File file, FileFIs currentFis, List<Difference> accountDifferences, List<Difference> fiDifferences, List<Difference> controllingPersonsDifference, List<SubmissionDetails> submissionDetails)
         {
             //this.userName = userName;
@@ -569,41 +573,47 @@ namespace AEOI.Editor.Web.Shared
             }
             if (onlyNew)
             {
-                accountTable.Columns.Add("Currency");
-                accountTable.Columns.Add("FX rate");
-                accountTable.Columns.Add("Balance");
-                accountTable.Columns.Add("Is Undocumented");
-                accountTable.Columns.Add("Recalcitrant");  
+                //accountTable.Columns.Add("Currency");
+                //accountTable.Columns.Add("FX rate");
+                //accountTable.Columns.Add("Balance");
+                //accountTable.Columns.Add("Is Undocumented");
+                //accountTable.Columns.Add("Recalcitrant");  
 
-                // Payment Details
-                accountTable.Columns.Add("Interest Amount"); 
-                accountTable.Columns.Add("Dividend amount");
-                accountTable.Columns.Add("Other income amount");
-                accountTable.Columns.Add("Proceeds amount");
+                //// Payment Details
+                //accountTable.Columns.Add("Interest Amount"); 
+                //accountTable.Columns.Add("Dividend amount");
+                //accountTable.Columns.Add("Other income amount");
+                //accountTable.Columns.Add("Proceeds amount");
 
-                // Account holder details
-                accountTable.Columns.Add("Title");
-                accountTable.Columns.Add("first name");
-                accountTable.Columns.Add("Middle name");
-                accountTable.Columns.Add("Last name");
-                accountTable.Columns.Add("Initials");
-                accountTable.Columns.Add("DoB");
-                accountTable.Columns.Add("Country_");
-                accountTable.Columns.Add("Former country name");
+                //// Account holder details
+                //accountTable.Columns.Add("Title");
+                //accountTable.Columns.Add("first name");
+                //accountTable.Columns.Add("Middle name");
+                //accountTable.Columns.Add("Last name");
+                //accountTable.Columns.Add("Initials");
+                //accountTable.Columns.Add("DoB");
+                //accountTable.Columns.Add("Country_");
+                //accountTable.Columns.Add("Former country name");
 
-                accountTable.Columns.Add("Name");
-                accountTable.Columns.Add("Passive NFE");
-                accountTable.Columns.Add("Owner Documented FI");
+                //accountTable.Columns.Add("Name");
+                //accountTable.Columns.Add("Passive NFE");
+                //accountTable.Columns.Add("Owner Documented FI");
 
-                accountTable.Columns.Add("Suite");
-                accountTable.Columns.Add("Street");
-                accountTable.Columns.Add("District");
-                accountTable.Columns.Add("City");
-                accountTable.Columns.Add("Post Code");
-                accountTable.Columns.Add("Free Format Address");
+                //accountTable.Columns.Add("Suite");
+                //accountTable.Columns.Add("Street");
+                //accountTable.Columns.Add("District");
+                //accountTable.Columns.Add("City");
+                //accountTable.Columns.Add("Post Code");
+                //accountTable.Columns.Add("Free Format Address");
 
-                accountTable.Columns.Add("Tax residency(multiple)");
-                accountTable.Columns.Add("Identification Number");
+                //accountTable.Columns.Add("Tax residency(multiple)");
+                //accountTable.Columns.Add("Identification Number");
+
+                List<string> columnsList = new List<string>(new string[] { "Currency", "FX rate", "Balance", "Is Undocumented", "Recalcitrant", "Interest Amount", "Dividend amount", "Other income amount", "Proceeds amount", "Title", "first name", "Middle name", "Last name","Initials", "DoB", "Country_", "Former country name","Name", "Passive NFE", "Owner Documented FI", "Suite", "Street","District", "City", "Post Code", "Free Format Address", "Tax residency(multiple)", "Identification Number" });
+                foreach (var column in columnsList)
+                {
+                    accountTable.Columns.Add(column);
+                }
             }
 
             if (!onlyNew)
@@ -635,7 +645,7 @@ namespace AEOI.Editor.Web.Shared
                 if (item.Edit == "Delete" && onlyDeleted)
                 {
                     autoIncrement++;
-                    accountTable.Rows.Add(autoIncrement, Account.FIID.Value, FindFiName(Account.FIID.Value), Account.AccountNumber.Value, Account.PersonType.Value, item.snapShotName, Account.AccountStatus.Value, item.dateOfFileModified, item.timeOfFileModified, item.userName,   item.Edit);
+                    accountTable.Rows.Add(autoIncrement, Account.FIID.Value, FindFiName(Account.FIID.Value), Account.AccountNumber.Value + suffixAccountDetail, Account.PersonType.Value, item.snapShotName, Account.AccountStatus.Value, item.dateOfFileModified, item.timeOfFileModified, item.userName,   item.Edit);
                 }
                 else if (item.Edit == "Edit" && !onlyNew && !onlyDeleted)
                 {
@@ -648,16 +658,15 @@ namespace AEOI.Editor.Web.Shared
                     String nameOfAccountHolder=null;
                     if (Account.PersonType.Value=="Individual")
                     {
+                        
                         nameOfAccountHolder = $"{Account.FirstName.Value} {Account.MiddleName.Value} {Account.LastName.Value}";
-                        accountTable.Rows.Add(autoIncrement, Account.FIID.Value, FindFiName(Account.FIID.Value), Account.AccountNumber.Value, Account.AccountType.Value, Account.AccountNumberType.Value, nameOfAccountHolder, Account.INCountryCode.Value, Account.FXRate.column, Account.AccountBalance.Value, Account.IsUndocumented.column, "", Account.Interest.Value, Account.Dividend.Value, Account.OtherIncome.Value, Account.Proceeds.Value, "", "", "", "", "", "", "", "", "-name", Account.PassiveNFE.Value, Account.IsUndocumented.column, Account.SuiteIdentifier.Value, Account.Street.Value, Account.DistrictName.Value, Account.City.Value, Account.PostCode.column, "", "", Account.IdentificationNumber.Value, item.snapShotName, Account.AccountStatus.Value, item.dateOfFileModified, item.timeOfFileModified, item.userName);
+                        accountTable.Rows.Add(autoIncrement, Account.FIID.Value, FindFiName(Account.FIID.Value), Account.AccountNumber.Value +suffixAccountDetail, Account.AccountType.Value + suffixAccountDetail, Account.AccountNumberType.Value+suffixAccountDetail, nameOfAccountHolder, Account.INCountryCode.Value + suffixAccountDetail, Account.FXRate.column + suffixAccountDetail + suffixAccountDetail, Account.AccountBalance.Value + suffixAccountDetail, Account.IsUndocumented.column + suffixAccountDetail, "", Account.Interest.Value + suffixPaymentDetail, Account.Dividend.Value + suffixPaymentDetail, Account.OtherIncome.Value + suffixPaymentDetail, Account.Proceeds.Value + suffixPaymentDetail, "", "", "", "", "", "", "", "", "-name", Account.PassiveNFE.Value + suffixAccountHolderDetail, Account.IsUndocumented.column + suffixAccountHolderDetail, Account.SuiteIdentifier.Value + suffixAccountHolderDetail, Account.Street.Value + suffixAccountHolderDetail, Account.DistrictName.Value + suffixAccountHolderDetail, Account.City.Value + suffixAccountHolderDetail, Account.PostCode.column + suffixAccountHolderDetail, "", "", Account.IdentificationNumber.Value + suffixAccountHolderDetail, item.snapShotName, Account.AccountStatus.Value, item.dateOfFileModified, item.timeOfFileModified, item.userName);
                     }
                     else if(Account.PersonType.Value == "Company")
                     {
                         nameOfAccountHolder = $"{Account.Name}";
-                        accountTable.Rows.Add(autoIncrement, Account.FIID.Value, FindFiName(Account.FIID.Value), Account.AccountNumber.Value,  Account.AccountType.Value, Account.AccountNumberType.Value, nameOfAccountHolder, Account.INCountryCode.Value, Account.FXRate.column, Account.AccountBalance.Value, Account.IsUndocumented.column, "",Account.Interest.Value,Account.Dividend.Value,Account.OtherIncome.Value,Account.Proceeds.Value,Account.Title,Account.FirstName.Value,Account.MiddleName.Value,Account.LastName.Value,"",Account.BirthDate.Value,Account.BirthCity.Value,Account.FormerCountryName.Value,"","","",Account.SuiteIdentifier.Value,Account.Street.Value,Account.DistrictName.Value,Account.City.Value,Account.PostCode.column,"","",Account.IdentificationNumber.Value, item.snapShotName, Account.AccountStatus.Value, item.dateOfFileModified, item.timeOfFileModified, item.userName);
+                        accountTable.Rows.Add(autoIncrement, Account.FIID.Value, FindFiName(Account.FIID.Value), Account.AccountNumber.Value + suffixAccountDetail,  Account.AccountType.Value + suffixAccountDetail, Account.AccountNumberType.Value + suffixAccountDetail, nameOfAccountHolder, Account.INCountryCode.Value + suffixAccountDetail, Account.FXRate.column + suffixAccountDetail, Account.AccountBalance.Value + suffixAccountDetail, Account.IsUndocumented.column + suffixAccountDetail, "",Account.Interest.Value + suffixPaymentDetail, Account.Dividend.Value + suffixPaymentDetail, Account.OtherIncome.Value + suffixPaymentDetail, Account.Proceeds.Value + suffixPaymentDetail, Account.Title + suffixAccountHolderDetail, Account.FirstName.Value + suffixAccountHolderDetail, Account.MiddleName.Value + suffixAccountHolderDetail, Account.LastName.Value + suffixAccountHolderDetail, "",Account.BirthDate.Value + suffixAccountHolderDetail, Account.BirthCity.Value + suffixAccountHolderDetail, Account.FormerCountryName.Value + suffixAccountHolderDetail, "","","",Account.SuiteIdentifier.Value + suffixAccountHolderDetail, Account.Street.Value + suffixAccountHolderDetail, Account.DistrictName.Value + suffixAccountHolderDetail, Account.City.Value + suffixAccountHolderDetail, Account.PostCode.column + suffixAccountHolderDetail, "","",Account.IdentificationNumber.Value + suffixAccountHolderDetail, item.snapShotName, Account.AccountStatus.Value, item.dateOfFileModified, item.timeOfFileModified, item.userName);
                     }
-
-                    
                 }
             });
 
