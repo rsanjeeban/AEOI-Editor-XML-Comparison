@@ -641,11 +641,15 @@ namespace AEOI.Editor.Web.Shared
             {
                 // Convert the account : string to object
                 FileAccountsAccount Account = JsonConvert.DeserializeObject<FileAccountsAccount>(item.Account);
-                
+                String nameOfAccountHolder = null;
                 if (item.Edit == "Delete" && onlyDeleted)
                 {
                     autoIncrement++;
-                    accountTable.Rows.Add(autoIncrement, Account.FIID.Value, FindFiName(Account.FIID.Value), Account.AccountNumber.Value, Account.PersonType.Value, item.snapShotName, Account.AccountStatus.Value, item.dateOfFileModified, item.timeOfFileModified, item.userName,   item.Edit);
+                    if (Account.PersonType.Value == "Individual")
+                    {
+                        nameOfAccountHolder = $"{Account.FirstName.Value} {Account.MiddleName.Value} {Account.LastName.Value}";
+                    }
+                    accountTable.Rows.Add(autoIncrement, Account.FIID.Value, FindFiName(Account.FIID.Value), Account.AccountNumber.Value, nameOfAccountHolder, item.snapShotName, Account.AccountStatus.Value, item.dateOfFileModified, item.timeOfFileModified, item.userName,   item.Edit);
                 }
                 else if (item.Edit == "Edit" && !onlyNew && !onlyDeleted)
                 {
@@ -655,10 +659,9 @@ namespace AEOI.Editor.Web.Shared
                 else if (item.Edit == "Insert" && onlyNew)
                 {
                     autoIncrement++;
-                    String nameOfAccountHolder=null;
+                    
                     if (Account.PersonType.Value=="Individual")
                     {
-                        
                         nameOfAccountHolder = $"{Account.FirstName.Value} {Account.MiddleName.Value} {Account.LastName.Value}";
                         accountTable.Rows.Add(autoIncrement, Account.FIID.Value, FindFiName(Account.FIID.Value), Account.AccountNumber.Value +suffixAccountDetail, Account.AccountType.Value + suffixAccountDetail, Account.AccountNumberType.Value+suffixAccountDetail, nameOfAccountHolder, Account.INCountryCode.Value + suffixAccountDetail, Account.FXRate.column + suffixAccountDetail, Account.AccountBalance.Value + suffixAccountDetail, Account.IsUndocumented.column + suffixAccountDetail, "", Account.Interest.Value + suffixPaymentDetail, Account.Dividend.Value + suffixPaymentDetail, Account.OtherIncome.Value + suffixPaymentDetail, Account.Proceeds.Value + suffixPaymentDetail, "", "", "", "", "", "", "", "", "-name", Account.PassiveNFE.Value + suffixAccountHolderDetail, Account.IsUndocumented.column + suffixAccountHolderDetail, Account.SuiteIdentifier.Value + suffixAccountHolderDetail, Account.Street.Value + suffixAccountHolderDetail, Account.DistrictName.Value + suffixAccountHolderDetail, Account.City.Value + suffixAccountHolderDetail, Account.PostCode.column + suffixAccountHolderDetail, "", "", Account.IdentificationNumber.Value + suffixAccountHolderDetail, item.snapShotName, Account.AccountStatus.Value, item.dateOfFileModified, item.timeOfFileModified, item.userName);
                     }
