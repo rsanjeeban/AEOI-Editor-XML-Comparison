@@ -950,7 +950,6 @@ namespace AEOI.Editor.Web.Shared
                     //Renaming the ExcelSheets
                     ExcelWorkSheet.Name = SheetNames[i];
                 }
-
                 
                 Console.WriteLine("FileSaveLocation: " + fileSaveLocation);
                 ExcelWorkBook.SaveAs(fileSaveLocation, Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
@@ -970,6 +969,7 @@ namespace AEOI.Editor.Web.Shared
             for (var t = 0; t < tempDataTable.Columns.Count; t++)
             {
                 ExcelWorkSheet.Cells[1, t + 1] = tempDataTable.Columns[t].ColumnName;
+                
             }
 
             // rows
@@ -979,8 +979,10 @@ namespace AEOI.Editor.Web.Shared
                 for (var j = 0; j < tempDataTable.Columns.Count; j++)
                 {
                     ExcelWorkSheet.Cells[t + 2, j + 1] = tempDataTable.Rows[t][j];
+
                 }
             }
+            ExcelWorkSheet.Columns.AutoFit();
         }
 
         private String checkTabName(String fieldName)
