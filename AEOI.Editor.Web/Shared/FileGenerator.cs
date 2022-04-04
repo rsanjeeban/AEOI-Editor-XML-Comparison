@@ -654,7 +654,11 @@ namespace AEOI.Editor.Web.Shared
                 else if (item.Edit == "Edit" && !onlyNew && !onlyDeleted)
                 {
                     autoIncrement++;
-                    accountTable.Rows.Add(autoIncrement, Account.FIID.Value, FindFiName(Account.FIID.Value), Account.AccountNumber.Value, Account.PersonType.Value, item.snapShotName, Account.AccountStatus.Value, item.dateOfFileModified, item.timeOfFileModified, item.userName,  item.Edit, item.LocalName, item.ValueTo, item.ValueFrom);
+                    if (Account.PersonType.Value == "Individual")
+                    {
+                        nameOfAccountHolder = $"{Account.FirstName.Value} {Account.MiddleName.Value} {Account.LastName.Value}";
+                    }
+                    accountTable.Rows.Add(autoIncrement, Account.FIID.Value, FindFiName(Account.FIID.Value), Account.AccountNumber.Value, nameOfAccountHolder,"Account Detail", item.Edit, item.LocalName, item.ValueTo, item.ValueFrom, item.snapShotName, Account.AccountStatus.Value, item.dateOfFileModified, item.timeOfFileModified, item.userName);
                 }
                 else if (item.Edit == "Insert" && onlyNew)
                 {
